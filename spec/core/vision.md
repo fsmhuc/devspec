@@ -1,14 +1,64 @@
-# System Vision
+# 系统愿景
 
-Describe the long term goal of the system.
+> 在此描述系统的长期目标和方向。这是所有设计决策的北极星。
 
-Example:
+---
 
-This project aims to provide an AI-native specification workflow
-that allows AI agents and humans to collaborate on software design.
+## 使命
 
-Key goals:
+一句话描述系统存在的意义：
 
-- Prevent specification drift
-- Support AI-driven development
-- Maintain architecture consistency
+<!-- 示例: 为 AI Agent 和人类团队提供结构化的协作开发框架 -->
+
+---
+
+## 核心目标
+
+列出 3-5 个关键目标，按优先级排序：
+
+<!-- 
+示例:
+1. 防止规格漂移 — 通过自动化验证保持规格与实现一致
+2. 支持 AI 驱动开发 — 为 AI Agent 提供清晰的入口和行为规范
+3. 决策可追溯 — 所有架构决策都有记录和上下文
+4. 降低认知负荷 — 新人（人类或 AI）能在 5 分钟内理解系统
+-->
+
+---
+
+## 非目标
+
+明确列出本系统**不打算**解决的问题，避免范围蔓延：
+
+<!--
+示例:
+- 不替代 CI/CD 系统
+- 不管理运行时配置
+- 不处理数据迁移
+-->
+
+---
+
+## 成功指标
+
+如何衡量系统是否达到了目标：
+
+<!--
+示例:
+- 规格覆盖率 > 90%（所有功能都有对应规格）
+- AI Agent 首次任务完成率 > 80%
+- 架构决策都有 ADR 记录
+-->
+
+---
+
+## 目标用户
+
+谁会使用这个系统：
+
+<!--
+示例:
+- AI 编码 Agent（Claude, GPT, Gemini 等）
+- 软件工程师（人类）
+- 技术负责人 / 架构师
+-->

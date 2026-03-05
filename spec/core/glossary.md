@@ -1,51 +1,51 @@
-# Glossary
+# 术语表
 
-Key terms used in this specification framework.
-
----
-
-## Spec
-
-A specification document describing system design.
+> 关键术语定义。AI Agent 和人类必须使用相同的术语，避免歧义。
 
 ---
 
-## ADR
+## 框架术语
 
-Architecture Decision Record. Documents important design decisions.
+| 术语                     | 定义                                         | 示例                         |
+| ------------------------ | -------------------------------------------- | ---------------------------- |
+| **Spec（规格）**         | 描述系统设计的规范文档                       | `features/my-feature/spec.md` |
+| **ADR（架构决策记录）**   | 记录重要架构决策的文档，含上下文、决策和后果 | `decisions/ADR-0001-*.md`     |
+| **Feature（功能）**      | 一个独立的功能单元，有自己的规格和任务       | `my-feature`, `payment`       |
+| **Task（任务）**         | 实现某个功能所需的具体工作项                 | "设计 API Schema"            |
+| **Vision（愿景）**       | 系统的长期目标和方向                         | `core/vision.md`             |
+| **Architecture（架构）** | 系统的高层结构和组件关系                     | `core/architecture.md`       |
 
----
+## 流程术语
 
-## Feature
+| 术语                               | 定义                          |
+| ---------------------------------- | ----------------------------- |
+| **Patch（补丁）**                  | 不涉及规格变更的轻量 bug 修复 |
+| **Proposal（提案）**               | 影响规格或架构的大型变更请求  |
+| **Archive（归档）**                | 已废弃规格的存放目录          |
+| **Versioning（版本控制）**         | 通过 git 追踪规格变更历史     |
+| **Review Gate（审查门控）**        | 变更合并前的检查点            |
+| **Definition of Done（完成标准）** | 判断任务是否完成的明确标准    |
 
-A discrete unit of functionality with its own spec.
+## 角色术语
 
----
-
-## Vision
-
-Long-term goals and direction of the system.
-
----
-
-## Architecture
-
-High-level structure and component relationships.
-
----
-
-## Workflow
-
-Process rules for AI agents and humans.
-
----
-
-## Archive
-
-Storage for deprecated specifications.
+| 术语                   | 定义                                             |
+| ---------------------- | ------------------------------------------------ |
+| **AI Agent**           | 执行开发任务的 AI 助手（Claude, GPT, Gemini 等） |
+| **Owner（负责人）**    | 对某个功能或决策负最终责任的人类                 |
+| **Reviewer（审查者）** | 审查变更并批准合并的角色                         |
 
 ---
 
-## Versioning
+## 状态定义
 
-Tracking changes to specifications over time.
+任务和功能使用以下状态：
+
+| 状态          | 含义                   |
+| ------------- | ---------------------- |
+| `draft`       | 草稿，设计中           |
+| `ready`       | 设计完成，可以开始实现 |
+| `in-progress` | 正在实现               |
+| `review`      | 实现完成，等待审查     |
+| `done`        | 审查通过，已完成       |
+| `blocked`     | 被其他任务阻塞         |
+| `deprecated`  | 已废弃，移至 archive   |

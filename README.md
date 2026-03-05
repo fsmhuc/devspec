@@ -1,203 +1,252 @@
 # OpenSpec Framework
 
-AI-native specification framework for building software with AI agents.
-
-[![Spec Validation](https://github.com/your-org/openspec-framework/actions/workflows/spec-validation.yml/badge.svg)](https://github.com/your-org/openspec-framework/actions/workflows/spec-validation.yml)
+AI 原生的规格驱动开发框架 — 让 AI Agent 与人类高效协作开发软件。
 
 ---
 
-## What is OpenSpec?
+## 什么是 OpenSpec？
 
-OpenSpec provides a reusable specification workflow that enables:
+OpenSpec 提供一套可复用的规格工作流，解决 AI 协作开发中的核心问题：
 
-- **Prevent spec drift** - Automated validation keeps specs consistent
-- **AI collaboration** - Clear entry points and rules for AI agents
-- **Versioned architecture** - Track changes with ADR documents
-- **Traceable decisions** - All design decisions are recorded
-- **Code generation** - Transform specs into implementation artifacts
+| 问题            | OpenSpec 方案            |
+| --------------- | ------------------------ |
+| 规格漂移        | 自动化验证保持一致性     |
+| AI 不知从何入手 | 结构化入口和行为规范     |
+| 决策无记录      | ADR 记录所有架构决策     |
+| 任务无追溯      | 任务 → 规格 → 愿景全链路 |
+| 代码和设计脱节  | 规格编译器自动生成代码桩 |
 
 ---
 
-## Quick Start
+## 快速开始
 
-### 1. Copy to Your Project
+### 1. 复制到你的项目
 
 ```bash
-cp -r spec/ tools/ .github/ /path/to/your/project/
+cp -r spec/ tools/ mcp/ .github/ /path/to/your/project/
 ```
 
-### 2. Define Your Vision
+### 2. 定义愿景
 
-Edit `spec/core/vision.md`:
+编辑 `spec/core/vision.md`:
 
 ```markdown
-# System Vision
+# 系统愿景
 
-My project aims to [goal].
+## 使命
+为 AI Agent 和人类团队提供结构化的协作开发框架
 
-Key goals:
-- Goal 1
-- Goal 2
+## 核心目标
+1. 防止规格漂移
+2. 支持 AI 驱动开发
+3. 决策可追溯
 ```
 
-### 3. Define Architecture
+### 3. 定义架构
 
-Edit `spec/core/architecture.md`:
+编辑 `spec/core/architecture.md`:
 
 ```markdown
-# System Architecture
+# 系统架构
 
-System layers:
-1. Frontend
-2. API
-3. Database
+## 架构概览
+分层架构: 规格层 → 实现层 → 运行时层
+
+## 架构约束
+1. 功能不得与架构冲突
+2. 架构变更需要 ADR
 ```
 
-### 4. Add Features
-
-Create `spec/features/my-feature/spec.md` and `tasks.md`.
-
-### 5. Validate & Generate
+### 4. 添加功能
 
 ```bash
-# Validate specs
-python3 tools/spec-linter.py spec
+python3 mcp/cli.py create-feature my-feature --goals "目标1, 目标2"
+```
 
-# Generate code
-python3 tools/spec-compiler.py spec generated
+### 5. 验证 & 生成
 
-# Visualize structure
-python3 tools/spec-graph.py spec tree
+```bash
+# 验证规格
+python3 mcp/cli.py validate
+
+# 生成代码桩
+python3 mcp/cli.py compile spec generated
+
+# 查看规格结构
+python3 mcp/cli.py graph spec tree
+
+# 完整开发循环
+python3 tools/ai-dev-loop.py spec
 ```
 
 ---
 
-## Spec Layers
+## 规格分层
 
 ```
-Vision (Why)
+愿景层 (Why)        — 为什么做这个系统
     │
     ▼
-Architecture (What)
+架构层 (What)       — 系统由什么组成
     │
     ▼
-Features (How)
+功能层 (How)        — 每个功能怎么设计
     │
     ▼
-Tasks (Do)
+任务层 (Do)         — 具体做什么事
+    │
+    ▼
+实现层 (Code)       — 代码和制品
 ```
 
 ---
 
-## AI Agent Entry Point
+## AI Agent 入口
 
-AI agents should start by reading:
+AI Agent 应从以下文件开始:
 
 ```
 spec/index.md
 ```
 
-This index guides agents through the specification hierarchy in the correct order.
+这个索引会引导 Agent 按正确顺序加载上下文。
 
 ---
 
-## Project Structure
+## 项目结构
 
 ```
 openspec-framework/
-├── spec/                    # Specifications
-│   ├── index.md            # AI entry point
-│   ├── core/               # Vision & Architecture
-│   │   ├── vision.md
-│   │   ├── architecture.md
-│   │   └── glossary.md
-│   ├── features/           # Feature specs
-│   │   ├── template.md
-│   │   └── <feature>/
-│   │       ├── spec.md
-│   │       ├── tasks.md
-│   │       └── decisions.md
-│   ├── decisions/          # Architecture Decision Records
-│   │   └── ADR-*.md
-│   ├── workflow/           # Process rules
-│   │   ├── spec-workflow.md
-│   │   ├── ai-agent-rules.md
-│   │   └── versioning.md
-│   └── archive/            # Deprecated specs
-├── tools/                   # Automation tools
-│   ├── spec-linter.py      # Validation
-│   ├── spec-compiler.py    # Code generation
-│   ├── spec-graph.py       # Visualization
-│   ├── ai-dev-loop.py      # Workflow orchestration
-│   ├── validate-spec.sh    # Quick validation
-│   └── run-loop.sh         # Run full loop
-├── docs/                    # Documentation
-│   ├── QUICKSTART.md
-│   └── ARCHITECTURE.md
-└── .github/                 # GitHub integration
-    ├── copilot-instructions.md
+├── spec/                       # 规格文档（框架核心）
+│   ├── index.md               # AI Agent 入口
+│   ├── core/                  # 核心: 愿景 & 架构
+│   │   ├── vision.md          # 系统愿景与目标
+│   │   ├── architecture.md    # 系统架构与约束
+│   │   └── glossary.md        # 术语表
+│   ├── features/              # 功能规格（使用时创建）
+│   │   ├── template.md        # 功能模板（含验收标准、非目标等）
+│   │   └── tasks-template.md  # 任务模板（含优先级、依赖）
+│   ├── decisions/             # 架构决策记录（ADR）
+│   │   └── ADR-template.md    # ADR 模板
+│   ├── workflow/              # 工作流规则
+│   │   ├── ai-agent-rules.md  # AI Agent 行为规范
+│   │   ├── spec-workflow.md   # 规格编写流程
+│   │   ├── context-loading.md # 上下文加载指南
+│   │   ├── versioning.md      # 版本控制策略
+│   │   └── patch-workflow.md  # 补丁工作流
+│   └── archive/               # 已废弃的规格
+├── tools/                      # 自动化工具
+│   ├── spec-linter.py         # 规格验证
+│   ├── spec-compiler.py       # 代码生成
+│   ├── spec-graph.py          # 结构可视化
+│   ├── ai-dev-loop.py         # 开发循环编排
+│   └── run-loop.sh            # 循环运行脚本
+├── mcp/                        # MCP Server & CLI
+│   ├── cli.py                 # CLI 工具
+│   └── server.py              # MCP Server
+├── examples/                   # 示例（展示框架用法，不属于框架本体）
+│   ├── user-auth/             # 示例: 用户认证功能
+│   ├── example-feature/       # 示例: 基础功能
+│   ├── decisions/             # 示例: ADR
+│   └── patches/               # 示例: 补丁
+├── changes/                    # 变更管理
+│   ├── patches/               # Bug 修复（轻量）
+│   └── proposals/             # 大型变更（需审查）
+└── .github/
+    ├── copilot-instructions.md # AI 指令
     └── workflows/
         └── spec-validation.yml
 ```
 
 ---
 
-## OpenSpec Pro Features
+## 工具链
 
-| Feature | Tool | Description |
-|---------|------|-------------|
-| **Validation** | `spec-linter.py` | Check spec consistency |
-| **Compilation** | `spec-compiler.py` | Generate code from specs |
-| **Visualization** | `spec-graph.py` | View spec hierarchy |
-| **Dev Loop** | `ai-dev-loop.py` | Automate development cycle |
-
----
-
-## Framework Principles
-
-1. **Spec First** - All implementation starts with specification
-2. **Version Everything** - Changes create new versions, never overwrite
-3. **Record Decisions** - Architecture decisions documented in ADRs
-4. **Prevent Overwrite** - Never modify specs without versioning
-5. **Archive Deprecated** - Move old specs to archive directory
+| 工具         | 命令                                       | 说明                   |
+| ------------ | ------------------------------------------ | ---------------------- |
+| **验证器**   | `python3 mcp/cli.py validate`              | 检查规格一致性和完整性 |
+| **编译器**   | `python3 mcp/cli.py compile`               | 从规格生成代码桩       |
+| **可视化**   | `python3 mcp/cli.py graph spec tree`       | 查看规格层级结构       |
+| **开发循环** | `python3 tools/ai-dev-loop.py spec`        | 验证→生成→测试→分析    |
+| **功能创建** | `python3 mcp/cli.py create-feature <name>` | 创建功能规格骨架       |
+| **ADR 创建** | `python3 mcp/cli.py create-adr <title>`    | 创建架构决策记录       |
 
 ---
 
-## AI Agent Rules
+## 核心原则
 
-AI agents working with this framework MUST follow:
-
-1. Never overwrite existing spec without versioning
-2. Architecture changes require ADR
-3. Feature specs must not conflict with architecture
-4. Deprecated specs must move to `spec/archive`
-5. Tasks must reference a spec
-
-See `spec/workflow/ai-agent-rules.md` for details.
+1. **Spec First** — 所有实现从规格开始
+2. **Git 版本控制** — 通过 git 追踪变更，不用文件复制
+3. **决策记录** — 架构决策写 ADR，功能决策写 decisions.md
+4. **永不覆盖** — 不直接覆盖规格，通过 git 追踪变更
+5. **废弃归档** — 不用的规格移至 archive
+6. **按需加载** — Agent 根据任务类型加载最少必要的上下文
 
 ---
 
-## CI/CD Integration
+## AI Agent 规则
 
-The framework includes GitHub Actions workflow:
+AI Agent 必须遵守:
+
+1. 先读后写 — 理解系统后再修改
+2. 规格驱动 — 所有实现有对应规格
+3. 最小变更 — 每次变更尽可能小且聚焦
+4. 永不覆盖 — 通过 git 追踪
+5. 架构变更需 ADR — 影响架构的变更先写决策
+6. 不确定就问 — 不猜测
+
+详见 `spec/workflow/ai-agent-rules.md`
+
+---
+
+## 变更分类
+
+| 变更类型 | 方式         | 路径                          | 需审查 |
+| -------- | ------------ | ----------------------------- | ------ |
+| Bug 修复 | Patch        | `changes/patches/fix-*.md`    | 可选   |
+| 新功能   | Feature Spec | `spec/features/*/spec.md`     | 必须   |
+| 架构变更 | ADR          | `spec/decisions/ADR-*.md`     | 必须   |
+| 大型变更 | Proposal     | `changes/proposals/prop-*.md` | 必须   |
+
+---
+
+## CI/CD 集成
 
 ```yaml
 # .github/workflows/spec-validation.yml
+name: Spec Validation
 on: [push, pull_request]
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - run: python3 tools/spec-linter.py spec
       - run: python3 tools/spec-compiler.py spec generated
 ```
 
 ---
 
-## Documentation
+## MCP Server 集成
 
-- [Quick Start Guide](docs/QUICKSTART.md)
+```json
+{
+    "mcpServers": {
+        "openspec": {
+            "command": "python3",
+            "args": ["/path/to/openspec-framework/mcp/server.py"]
+        }
+    }
+}
+```
+
+---
+
+## 文档
+
+- [快速开始](docs/QUICKSTART.md)
+- [架构说明](docs/ARCHITECTURE.md)
 - [Architecture Overview](docs/ARCHITECTURE.md)
 - [OpenSpec Pro](spec/workflow/openspec-pro.md)
 - [AI Agent Rules](spec/workflow/ai-agent-rules.md)

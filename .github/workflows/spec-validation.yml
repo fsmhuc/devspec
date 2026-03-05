@@ -1,0 +1,58 @@
+name: OpenSpec Validation
+
+on:
+  push:
+    paths:
+      - 'spec/**'
+      - 'tools/**'
+  pull_request:
+    paths:
+      - 'spec/**'
+      - 'tools/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Validate Specs
+        run: python3 tools/spec-linter.py spec
+
+      - name: Generate Artifacts
+        run: python3 tools/spec-compiler.py spec generated
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-artifacts
+          path: generated/
+
+  graph:
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Generate Graph
+        run: python3 tools/spec-graph.py spec mermaid > spec-graph.md
+
+      - name: Upload Graph
+        uses: actions/upload-artifact@v3
+        with:
+          name: spec-graph
+          path: spec-graph.md

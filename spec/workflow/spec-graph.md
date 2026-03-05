@@ -1,60 +1,61 @@
-# Spec Graph
+# 规格图
 
-Visualize specification hierarchy and dependencies.
-
----
-
-## Purpose
-
-Provide visual overview of spec structure.
+> 可视化规格层级结构和依赖关系。
 
 ---
 
-## Output Formats
+## 用途
 
-### ASCII Tree
+提供规格结构的可视化概览，帮助理解系统全貌。
+
+---
+
+## 输出格式
+
+### ASCII 树
 
 ```bash
-python3 tools/spec-graph.py spec tree
+python3 mcp/cli.py graph spec tree
 ```
 
-Example output:
+示例输出:
 
 ```
 OpenSpec Hierarchy
 
 └── 📁 OpenSpec
-    ├── 🎯 Vision
-    ├── 🏗️ Architecture
-    ├── 📚 Features
-    │   ├── 📦 example-feature
-    │   │   └── ✅ Tasks
-    └── 📋 Decisions
-        └── 📝 ADR-0001-spec-versioning
+    ├── 🎯 愿景
+    ├── 🏗️ 架构
+    ├── 📚 功能
+    │   ├── 📦 my-feature
+    │   │   └── ✅ 任务 [2/4]
+    └── 📋 决策
+        └── 📝 ADR-0001-xxx
 ```
 
-### Mermaid Diagram
+### Mermaid 图
 
 ```bash
-python3 tools/spec-graph.py spec mermaid
+python3 mcp/cli.py graph spec mermaid
 ```
 
-Generates Mermaid flowchart for documentation.
+生成 Mermaid 流程图，可嵌入文档。
 
-### JSON Graph
+### JSON 结构
 
 ```bash
-python3 tools/spec-graph.py spec json
+python3 mcp/cli.py graph spec json
 ```
 
-Machine-readable graph structure.
+机器可读的图结构数据。
 
 ---
 
-## Integration
+## 集成方式
 
-Use JSON output for:
-
-- CI/CD visualization
-- IDE plugins
-- Custom tooling
+| 用途         | 格式      |
+| ------------ | --------- |
+| 终端浏览     | `tree`    |
+| 文档嵌入     | `mermaid` |
+| CI/CD 流水线 | `json`    |
+| IDE 插件     | `json`    |

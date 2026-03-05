@@ -1,35 +1,110 @@
-# Feature Spec Template
+# [功能名称]
 
-## Feature Name
-
-Describe the feature.
+> 状态: `draft` | `ready` | `in-progress` | `review` | `done`
 
 ---
 
-## Goals
+## 目标
 
-What problem does this solve?
+这个功能要解决什么问题？列出 2-5 个具体目标：
 
----
-
-## Design
-
-How does the feature work?
+- 目标 1
+- 目标 2
 
 ---
 
-## Interfaces
+## 非目标
 
-API / data structure.
+明确列出这个功能**不做**什么，防止范围蔓延：
 
----
-
-## Dependencies
-
-Other features or services.
+- 不处理 XXX
+- 不支持 YYY
 
 ---
 
-## Risks
+## 设计
 
-Possible design risks.
+### 概述
+
+用 2-3 句话概括功能的核心设计。
+
+### 详细设计
+
+描述实现方案，包括数据流、状态变化、核心逻辑等。
+
+<!--
+可以使用 Mermaid 图:
+```mermaid
+sequenceDiagram
+    Client->>API: POST /login
+    API->>DB: 验证凭据
+    DB-->>API: 用户信息
+    API-->>Client: JWT Token
+```
+-->
+
+---
+
+## 接口
+
+### API 端点
+
+| 方法 | 路径       | 描述     | 请求体              | 响应             |
+| ---- | ---------- | -------- | ------------------- | ---------------- |
+| GET  | `/api/xxx` | 获取资源 | -                   | `{ data: T }`    |
+| POST | `/api/xxx` | 创建资源 | `{ field: string }` | `{ id: string }` |
+
+### 数据模型
+
+```
+{
+  "id": "string",
+  "name": "string",
+  "createdAt": "datetime"
+}
+```
+
+---
+
+## 验收标准
+
+功能完成必须满足以下所有条件：
+
+- [ ] 标准 1: 描述可验证的行为
+- [ ] 标准 2: 描述可验证的行为
+- [ ] 标准 3: 边界条件处理正确
+
+---
+
+## 约束条件
+
+- 性能: 响应时间 < XXms
+- 安全: 需要认证/授权
+- 兼容: 需要向后兼容
+
+---
+
+## 依赖
+
+| 依赖项 | 类型     | 状态 |
+| ------ | -------- | ---- |
+| 功能-A | 功能依赖 | done |
+| 服务-B | 外部服务 | 可用 |
+
+---
+
+## 风险
+
+| 风险     | 可能性   | 影响     | 缓解方案 |
+| -------- | -------- | -------- | -------- |
+| 风险描述 | 高/中/低 | 高/中/低 | 应对方案 |
+
+---
+
+## 边界情况
+
+列出需要处理的边界情况和异常场景：
+
+- 当输入为空时...
+- 当并发访问时...
+- 当依赖服务不可用时...

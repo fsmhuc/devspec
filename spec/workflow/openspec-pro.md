@@ -1,73 +1,103 @@
 # OpenSpec Pro
 
-Advanced AI-native specification system.
+> 高级 AI 原生规格系统的工具链。
 
 ---
 
-## Components
+## 工具组件
 
-### 1. Spec Validator
+### 1. 规格验证器（Spec Validator）
 
-Validates specification consistency and completeness.
+验证规格的一致性和完整性。
 
-See: `spec/workflow/spec-validator.md`
+```bash
+python3 mcp/cli.py validate spec
+python3 tools/spec-linter.py spec
+```
 
-### 2. Spec Compiler
+检查项：
+- 必要文件是否存在
+- 必要章节是否完整
+- 功能是否与架构冲突
+- 任务是否关联到规格
+- 是否有孤立规格
 
-Transforms specs into code artifacts.
+详见: `spec/workflow/spec-validator.md`
 
-See: `spec/workflow/spec-compiler.md`
+### 2. 规格编译器（Spec Compiler）
 
-### 3. Spec Graph
+从规格生成代码桩、API Schema、文档和测试模板。
 
-Visualizes spec hierarchy.
+```bash
+python3 mcp/cli.py compile spec generated
+python3 tools/spec-compiler.py spec generated
+```
 
-See: `spec/workflow/spec-graph.md`
+详见: `spec/workflow/spec-compiler.md`
 
-### 4. AI Dev Loop
+### 3. 规格图（Spec Graph）
 
-Orchestrates automated development cycle.
+可视化规格层级和依赖关系。
 
-See: `spec/workflow/ai-dev-loop.md`
+```bash
+python3 mcp/cli.py graph spec tree     # ASCII 树
+python3 mcp/cli.py graph spec mermaid  # Mermaid 图
+python3 mcp/cli.py graph spec json     # JSON 结构
+```
+
+详见: `spec/workflow/spec-graph.md`
+
+### 4. AI 开发循环（AI Dev Loop）
+
+自动化开发周期：验证 → 生成 → 测试 → 分析。
+
+```bash
+python3 tools/ai-dev-loop.py spec
+python3 tools/ai-dev-loop.py spec --skip-tests
+```
+
+详见: `spec/workflow/ai-dev-loop.md`
 
 ---
 
-## Architecture
+## 架构
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    OpenSpec Pro                          │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│   spec/                                                  │
-│   ├── index.md ──────> [Validator] ────┐               │
-│   ├── core/                             │               │
-│   ├── features/                         ▼               │
-│   └── decisions/ ────> [Compiler] ───> generated/       │
+│   spec/                                                 │
+│   ├── index.md ──────> [验证器] ────┐                   │
+│   ├── core/                          │                   │
+│   ├── features/                      ▼                   │
+│   └── decisions/ ────> [编译器] ───> generated/          │
 │                              │                          │
 │                              ▼                          │
-│                         [Graph] ───> Visualization      │
+│                         [规格图] ───> 可视化              │
+│                                                         │
+│   [AI Dev Loop] 串联上述工具，自动化执行                   │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Benefits
+## 快速开始
 
-| Problem | Solution |
-|---------|----------|
-| Spec drift | Automated validation |
-| Manual coding | Code generation |
-| Unclear structure | Visual graphs |
-| Broken workflow | AI Dev Loop |
+```bash
+# 1. 定义规格
+#    编辑 spec/ 目录下的文件
 
----
+# 2. 验证规格
+python3 mcp/cli.py validate
 
-## Getting Started
+# 3. 生成代码
+python3 mcp/cli.py compile
 
-1. Define specs in `spec/` directory
-2. Run validation: `./tools/validate-spec.sh`
-3. Generate code: `python3 tools/spec-compiler.py spec`
-4. Visualize: `python3 tools/spec-graph.py spec tree`
-5. Full loop: `./tools/run-loop.sh`
+# 4. 查看结构
+python3 mcp/cli.py graph spec tree
+
+# 5. 完整循环
+python3 tools/ai-dev-loop.py spec
+```

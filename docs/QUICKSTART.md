@@ -1,126 +1,106 @@
-# Quick Start Guide
+# 快速开始
 
-Get started with OpenSpec Framework in 5 minutes.
+5 分钟上手 OpenSpec Framework。
 
 ---
 
-## 1. Copy to Your Project
+## 1. 复制到你的项目
 
 ```bash
-cp -r spec/ /path/to/your/project/
-cp -r tools/ /path/to/your/project/
-cp -r .github/ /path/to/your/project/
+cp -r spec/ tools/ mcp/ .github/ /path/to/your/project/
 ```
 
 ---
 
-## 2. Define Your Vision
+## 2. 定义愿景
 
-Edit `spec/core/vision.md`:
+编辑 `spec/core/vision.md`（参考模板中的注释）：
 
 ```markdown
-# System Vision
+# 系统愿景
 
-My project aims to [goal].
+## 使命
+[一句话描述系统目标]
 
-Key goals:
+## 核心目标
+1. 目标 1
+2. 目标 2
 
-- Goal 1
-- Goal 2
-- Goal 3
+## 非目标
+- 不做的事情
 ```
 
 ---
 
-## 3. Define Architecture
+## 3. 定义架构
 
-Edit `spec/core/architecture.md`:
+编辑 `spec/core/architecture.md`：
 
 ```markdown
-# System Architecture
+# 系统架构
 
-System layers:
+## 架构概览
+[整体架构风格]
 
-1. Frontend
+## 系统分层
+1. 前端
 2. API
-3. Database
+3. 数据库
 
-Architecture rules:
-
-- Frontend calls API only
-- API handles business logic
-- Database stores state
+## 架构约束
+- 功能不得与架构冲突
+- 架构变更需要 ADR
 ```
 
 ---
 
-## 4. Add a Feature
-
-Create `spec/features/my-feature/spec.md`:
-
-```markdown
-# My Feature
-
-## Goals
-
-- Solve problem X
-
-## Design
-
-Component A talks to Component B.
-
-## Interfaces
-
-- GET /api/my-feature
-- POST /api/my-feature
-```
-
-Create `spec/features/my-feature/tasks.md`:
-
-```markdown
-# Tasks
-
-- [ ] Design API schema
-- [ ] Implement endpoint
-- [ ] Add tests
-```
-
----
-
-## 5. Validate
+## 4. 添加功能
 
 ```bash
-python3 tools/spec-linter.py spec
+python3 mcp/cli.py create-feature my-feature --goals "目标1, 目标2"
 ```
+
+然后编辑生成的文件：
+- `spec/features/my-feature/spec.md` — 功能规格
+- `spec/features/my-feature/tasks.md` — 任务列表
 
 ---
 
-## 6. Generate Code
+## 5. 验证
 
 ```bash
-python3 tools/spec-compiler.py spec generated
+python3 mcp/cli.py validate
 ```
 
 ---
 
-## 7. Visualize
+## 6. 生成代码
 
 ```bash
-python3 tools/spec-graph.py spec tree
+python3 mcp/cli.py compile spec generated
 ```
 
 ---
 
-## 8. Run Full Loop
+## 7. 查看结构
 
 ```bash
-./tools/run-loop.sh
+python3 mcp/cli.py graph spec tree
 ```
 
 ---
 
-## Next Steps
+## 8. 完整开发循环
 
-- Read `spec/workflow/ai-agent-rules.md`
-- Set up CI/CD with `.github/workflows/spec-validation.yml`
-- Customize tools for your stack
+```bash
+python3 tools/ai-dev-loop.py spec
+```
+
+---
+
+## 下一步
+
+- 阅读 `spec/workflow/ai-agent-rules.md` 了解 AI 行为规范
+- 阅读 `spec/workflow/context-loading.md` 了解上下文加载策略
+- 查看 `examples/` 目录中的示例
+- 配置 CI/CD: `.github/workflows/spec-validation.yml`

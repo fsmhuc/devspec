@@ -1,63 +1,42 @@
-# Spec Compiler
+# 规格编译器
 
-Transform specifications into implementation artifacts.
-
----
-
-## Purpose
-
-Generate code, schemas, and documentation from specs.
+> 将规格文档转换为可实现的代码制品。
 
 ---
 
-## Generated Artifacts
+## 用途
 
-### Implementation Stubs
-
-```
-generated/stubs/<feature>.ts
-```
-
-TypeScript class stubs with TODO markers.
-
-### API Schemas
-
-```
-generated/schemas/openapi.json
-```
-
-OpenAPI 3.0 specification from interfaces.
-
-### Documentation
-
-```
-generated/docs/<feature>.md
-```
-
-Feature documentation from specs.
-
-### Test Templates
-
-```
-generated/tests/<feature>.test.ts
-```
-
-Test templates from task lists.
+从规格自动生成代码桩、API Schema、文档和测试模板，减少重复工作。
 
 ---
 
-## Usage
+## 生成的制品
+
+| 制品类型   | 输出路径                            | 来源               | 说明                        |
+| ---------- | ----------------------------------- | ------------------ | --------------------------- |
+| 代码桩     | `generated/stubs/<feature>.ts`      | spec.md            | TypeScript 类桩 + TODO 标记 |
+| API Schema | `generated/schemas/openapi.json`    | spec.md 的接口章节 | OpenAPI 3.0 规范            |
+| 文档       | `generated/docs/<feature>.md`       | spec.md            | 功能文档                    |
+| 测试模板   | `generated/tests/<feature>.test.ts` | tasks.md           | 测试桩                      |
+
+---
+
+## 使用方法
 
 ```bash
+# 通过 CLI
+python3 mcp/cli.py compile spec generated
+
+# 直接运行
 python3 tools/spec-compiler.py spec generated
 ```
 
 ---
 
-## Customization
+## 自定义扩展
 
-Extend `SpecCompiler` class to add:
+继承 `SpecCompiler` 类可以添加：
 
-- Custom code generators
-- Additional output formats
-- Language-specific templates
+- 自定义代码生成器（如 Python、Go、Rust）
+- 额外的输出格式
+- 语言特定的模板

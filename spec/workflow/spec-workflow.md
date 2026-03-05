@@ -1,47 +1,124 @@
-# Spec Workflow
+# 规格工作流
 
-AI agents must follow this process.
-
----
-
-1 Define Vision
-
-```
-spec/core/vision.md
-```
+> AI Agent 和人类必须遵循此流程来创建和修改规格。
 
 ---
 
-2 Define Architecture
+## 完整工作流
 
 ```
-spec/core/architecture.md
-```
-
----
-
-3 Add Feature Spec
-
-```
-spec/features/<feature>/spec.md
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  1. 理解愿景  │ ──> │  2. 检查架构  │ ──> │  3. 写功能规格 │
+└─────────────┘     └─────────────┘     └─────────────┘
+                                              │
+                    ┌─────────────┐     ┌─────┴───────┐
+                    │  5. 记录决策  │ <── │  4. 拆分任务  │
+                    └─────────────┘     └─────────────┘
+                          │
+                    ┌─────┴───────┐     ┌─────────────┐
+                    │  6. 实现代码  │ ──> │  7. 验证审查  │
+                    └─────────────┘     └─────────────┘
 ```
 
 ---
 
-4 Add Tasks
+## 步骤详解
+
+### 1. 理解愿景
 
 ```
-tasks.md
+阅读: spec/core/vision.md
+目的: 确认新功能是否符合系统的长期方向
 ```
+
+**检查点**: 新功能是否在愿景的目标范围内？是否与非目标冲突？
+
+### 2. 检查架构
+
+```
+阅读: spec/core/architecture.md 和相关 ADR
+目的: 确认设计方案是否符合架构约束
+```
+
+**检查点**: 是否需要创建 ADR？是否与现有架构冲突？
+
+### 3. 编写功能规格
+
+```
+创建: spec/features/<feature>/spec.md
+模板: spec/features/template.md
+```
+
+必须包含:
+- [ ] 目标（Goals）
+- [ ] 非目标（Non-Goals）
+- [ ] 设计（Design）
+- [ ] 接口（Interfaces）
+- [ ] 验收标准（Acceptance Criteria）
+- [ ] 约束条件（Constraints）
+- [ ] 依赖（Dependencies）
+- [ ] 风险（Risks）
+- [ ] 边界情况（Edge Cases）
+
+### 4. 拆分任务
+
+```
+创建: spec/features/<feature>/tasks.md
+模板: spec/features/tasks-template.md
+```
+
+任务拆分原则:
+- 每个任务可独立完成和验证
+- 明确优先级（P0 > P1 > P2）
+- 标注依赖关系
+- 给出规模预估（XS/S/M/L/XL）
+
+### 5. 记录决策
+
+```
+创建: spec/decisions/ADR-XXXX-<title>.md（如有架构影响）
+创建: spec/features/<feature>/decisions.md（功能级别决策）
+```
+
+需要 ADR 的情况:
+- 引入新技术栈
+- 改变系统分层
+- 改变数据存储方案
+- 改变认证/安全策略
+
+### 6. 实现代码
+
+```
+运行: python3 mcp/cli.py compile（可选，生成代码桩）
+按: tasks.md 的优先级和依赖顺序实施
+```
+
+实现规范:
+- 逐个任务实现，每完成一个更新状态
+- 代码必须符合规格中的接口定义
+- 异常处理覆盖规格中的边界情况
+
+### 7. 验证审查
+
+```
+运行: python3 mcp/cli.py validate
+运行: python3 tools/ai-dev-loop.py spec（完整循环）
+```
+
+验证清单:
+- [ ] 规格验证通过
+- [ ] 所有验收标准满足
+- [ ] 任务全部标记为 done
+- [ ] 文档已更新
 
 ---
 
-5 Record Decisions
+## 变更类型快速指南
 
-```
-spec/decisions
-```
-
----
-
-6 Implement Code
+| 我要做的事 | 流程         | 起始步骤       |
+| ---------- | ------------ | -------------- |
+| 修 Bug     | Patch 工作流 | 直接创建 patch |
+| 加新功能   | 完整工作流   | 从步骤 1 开始  |
+| 改架构     | 需要 ADR     | 从步骤 2 开始  |
+| 改现有功能 | 部分工作流   | 从步骤 3 开始  |
+| 纯文档更新 | 直接修改     | 直接改         |

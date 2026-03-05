@@ -1,30 +1,54 @@
-# ADR 0001 — Spec Versioning
+# ADR-0001 — 规格版本控制
 
-## Status
-
-Accepted
-
----
-
-## Context
-
-Specs evolve and sometimes new designs replace old ones.
-
-Without versioning, specs become inconsistent.
+> 日期: 2024-01-01  
+> 状态: `accepted`  
+> 决策者: 项目团队
 
 ---
 
-## Decision
+## 上下文
 
-All major design changes must create:
-
-- a new spec version
-- a new ADR document
-
-Old specs must be archived.
+规格会随项目演进而变化。如果没有版本控制机制，规格会变得不一致，
+无法追溯设计决策的演变过程。
 
 ---
 
-## Consequences
+## 决策
 
-Spec history remains traceable.
+使用 Git 作为规格的版本控制机制（而非文件复制）：
+
+- 所有规格变更通过 git commit 追踪
+- 重大设计变更必须创建新的 ADR 文档记录决策
+- 已废弃的规格移至 `spec/archive/` 并在 commit message 中注明
+
+---
+
+## 备选方案
+
+| 方案                | 优点                         | 缺点               | 结论     |
+| ------------------- | ---------------------------- | ------------------ | -------- |
+| Git 版本控制        | 原生差异追踪，与开发流程统一 | 需要 git 知识      | **采用** |
+| 文件复制 (v1, v2..) | 简单直观                     | 文件爆炸，难以追踪 | 拒绝     |
+| 数据库版本          | 可查询                       | 增加复杂度         | 拒绝     |
+
+---
+
+## 后果
+
+### 正面
+- 规格历史完全可追溯（`git log`, `git diff`）
+- 与代码版本控制统一，降低认知负荷
+- 支持分支开发和合并
+
+### 负面
+- 需要所有参与者（包括 AI Agent）了解 git 基础
+
+### 风险
+- 大量并发修改可能导致合并冲突 → 通过功能分支缓解
+
+---
+
+## 受影响的规格
+
+- `spec/workflow/versioning.md`
+- 所有 `spec/` 目录下的文件

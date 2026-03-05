@@ -1,53 +1,70 @@
-# Proposal Template
+# 提案模板
 
-Use this template for larger changes that affect specs or architecture.
-
----
-
-## Summary
-
-Brief description of the proposed change.
+> 用于影响规格或架构的大型变更。
 
 ---
 
-## Motivation
+## 摘要
 
-Why is this change needed?
-
----
-
-## Design
-
-How will this be implemented?
+一句话描述提案内容。
 
 ---
 
-## Spec Changes
+## 动机
 
-List spec files that need to be updated.
-
-- `spec/features/xxx/spec.md` - Description of changes
+为什么需要这个变更？解决什么问题？
 
 ---
 
-## Impact
+## 设计方案
 
-- Breaking changes: Yes/No
-- Affected features: List
-- Migration needed: Yes/No
+### 概述
 
----
+如何实现？
 
-## Alternatives Considered
+### 详细设计
 
-What other approaches were evaluated?
+包括数据流、状态变化、接口定义等。
 
 ---
 
-## Timeline
+## 规格变更
 
-- [ ] Design review
-- [ ] Spec updates
+列出需要修改的规格文件：
+
+| 文件                        | 变更概述               |
+| --------------------------- | ---------------------- |
+| `spec/features/xxx/spec.md` | 新增/修改 xxx          |
+| `spec/core/architecture.md` | 修改 xxx（如涉及架构） |
+
+---
+
+## 影响分析
+
+- 破坏性变更: 是/否
+- 受影响功能: 列出
+- 需要迁移: 是/否
+- 需要 ADR: 是/否
+
+---
+
+## 备选方案
+
+| 方案   | 优点 | 缺点 | 结论     |
+| ------ | ---- | ---- | -------- |
+| 方案 A | ...  | ...  | **推荐** |
+| 方案 B | ...  | ...  | 拒绝     |
+
+---
+
+## 实施计划
+
+- [ ] 设计审查
+- [ ] 规格更新
+- [ ] ADR 创建（如需要）
+- [ ] 代码实现
+- [ ] 测试
+- [ ] 文档更新
 - [ ] Implementation
 - [ ] Testing
 - [ ] Documentation

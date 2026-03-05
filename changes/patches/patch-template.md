@@ -1,51 +1,53 @@
-# Patch Template
+# 补丁模板
 
-Use this template for small bug fixes that don't require a full proposal.
-
----
-
-## Problem
-
-Describe the bug or issue.
-
-- What is broken?
-- What is the expected behavior?
-- What is the actual behavior?
+> 用于不涉及规格变更的轻量 Bug 修复。
 
 ---
 
-## Fix
+## 问题
 
-Explain the fix.
+描述 Bug 或问题：
 
-- Root cause
-- Solution
-- Code changes (if applicable)
-
----
-
-## Impact
-
-List affected modules.
-
-- Module 1
-- Module 2
+- 什么坏了？
+- 期望行为是什么？
+- 实际行为是什么？
 
 ---
 
-## Testing
+## 根因分析
 
-How was this tested?
-
-- [ ] Unit test added/updated
-- [ ] Manual testing performed
-- [ ] No test needed (explain why)
+问题的根本原因是什么？
 
 ---
 
-## Checklist
+## 修复方案
 
-- [ ] Fix is minimal and focused
-- [ ] No spec changes required
-- [ ] No breaking changes
+具体修复了什么：
+
+- 修改了哪些文件
+- 为什么这样修
+
+---
+
+## 影响范围
+
+- 受影响的模块:
+- 是否有副作用:
+
+---
+
+## 测试
+
+- [ ] 单元测试已添加/更新
+- [ ] 手动测试已完成
+- [ ] 无需测试（说明原因）
+
+---
+
+## 检查清单
+
+- [ ] 修复是最小且聚焦的
+- [ ] 不涉及规格变更
+- [ ] 无破坏性变更
+- [ ] 已运行 `python3 mcp/cli.py validate`
 - [ ] Reviewed by: ___________

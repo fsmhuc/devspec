@@ -115,8 +115,18 @@ def spec_list_features(spec_root: str = "spec") -> str:
             total, done = 0, 0
             if tasks_file.exists():
                 content = tasks_file.read_text()
-                total = len(re.findall(r"- \[[ x]\]", content))
-                done = len(re.findall(r"- \[x\]", content))
+                # Count checkbox-style tasks: - [x] and - [ ]
+                checkbox_total = len(re.findall(r"- \[[ x]\]", content))
+                checkbox_done = len(re.findall(r"- \[x\]", content))
+                # Count table-style tasks: | # | task | `status` |
+                table_statuses = re.findall(r"\|\s*\d+\s*\|.*?\|\s*`(\w[\w-]*)`\s*\|", content)
+                table_total = len(table_statuses)
+                table_done = sum(1 for s in table_statuses if s == "done")
+                # Use whichever format has more tasks
+                if table_total > checkbox_total:
+                    total, done = table_total, table_done
+                else:
+                    total, done = checkbox_total, checkbox_done
             status = f"[{done}/{total}]" if total > 0 else "[no tasks]"
             lines.append(f"  {status} {feature_dir.name}")
     return "\n".join(lines)

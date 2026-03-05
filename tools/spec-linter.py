@@ -60,8 +60,8 @@ class SpecLinter:
             return
 
         content = vision_path.read_text().lower()
-        if "goal" not in content:
-            self.warnings.append("vision.md should define goals")
+        if "goal" not in content and "目标" not in content and "使命" not in content:
+            self.warnings.append("vision.md should define goals (目标/使命)")
 
     def check_architecture(self):
         """Verify architecture.md exists with required sections."""
@@ -71,8 +71,9 @@ class SpecLinter:
             return
 
         content = arch_path.read_text().lower()
-        if "layer" not in content and "component" not in content:
-            self.warnings.append("architecture.md should define layers or components")
+        has_structure = any(kw in content for kw in ["layer", "component", "分层", "组件", "架构"])
+        if not has_structure:
+            self.warnings.append("architecture.md should define layers or components (分层/组件)")
 
     def check_features(self):
         """Check all feature specs have required structure."""
@@ -88,10 +89,13 @@ class SpecLinter:
                     continue
 
                 content = spec_file.read_text().lower()
-                required = ["goal", "design"]
-                for section in required:
-                    if section not in content:
-                        self.warnings.append(f"{feature_dir.name}/spec.md missing '{section}' section")
+                # Support both English and Chinese keywords
+                has_goals = any(kw in content for kw in ["goal", "目标"])
+                has_design = any(kw in content for kw in ["design", "设计"])
+                if not has_goals:
+                    self.warnings.append(f"{feature_dir.name}/spec.md missing '目标/goals' section")
+                if not has_design:
+                    self.warnings.append(f"{feature_dir.name}/spec.md missing '设计/design' section")
 
     def check_adrs(self):
         """Validate ADR documents."""
@@ -100,11 +104,20 @@ class SpecLinter:
             return
 
         for adr_file in adrs_path.glob("ADR-*.md"):
+            # Skip template files
+            if "template" in adr_file.name.lower():
+                continue
             content = adr_file.read_text().lower()
-            required_sections = ["status", "context", "decision", "consequences"]
-            for section in required_sections:
-                if section not in content:
-                    self.warnings.append(f"{adr_file.name} missing '{section}' section")
+            # Support both English and Chinese keywords
+            required_sections = {
+                "status/状态": ["status", "状态"],
+                "context/上下文": ["context", "上下文", "背景"],
+                "decision/决策": ["decision", "决策", "决定"],
+                "consequences/后果": ["consequences", "后果", "影响"],
+            }
+            for section_name, keywords in required_sections.items():
+                if not any(kw in content for kw in keywords):
+                    self.warnings.append(f"{adr_file.name} missing '{section_name}' section")
 
     def check_tasks(self):
         """Verify tasks reference specs."""

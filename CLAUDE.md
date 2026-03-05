@@ -1,126 +1,145 @@
-# OpenSpec Framework - Claude Code Configuration
+# OpenSpec Framework — AI Agent 配置
 
-This file provides instructions for Claude Code when working with this project.
+> 本文件为 AI 编码 Agent 提供项目级指令。适用于 Claude Code、Cursor、Windsurf 等工具。
 
-## Project Overview
+---
 
-OpenSpec is an AI-native specification framework for building software with AI agents.
+## 项目概述
 
-## Spec Entry Point
+OpenSpec 是一个 AI 原生的规格框架，用于 AI Agent 与人类协作开发软件。
+它通过结构化的规格文档驱动开发，确保设计一致性和决策可追溯性。
 
-Always read `spec/index.md` first to understand the project structure.
+---
 
-## Available Tools
+## 入口文件
 
-### CLI Tools (Direct Execution)
+**每次会话开始时，必须先阅读 `spec/index.md`**，它会指导你按正确顺序加载上下文。
+
+---
+
+## 上下文加载策略
+
+根据任务类型，加载不同文件以优化上下文窗口：
+
+| 任务类型 | 必读文件                                                     | 可选文件                              |
+| -------- | ------------------------------------------------------------ | ------------------------------------- |
+| 新功能   | `index.md` → `vision.md` → `architecture.md`                 | 相关 `features/*/spec.md`, `ADR-*.md` |
+| Bug 修复 | 相关 `features/*/spec.md` + `tasks.md`                       | `patch-workflow.md`                   |
+| 架构变更 | `vision.md` → `architecture.md` → 所有 `ADR-*.md`            | 受影响的 `features/`                  |
+| 理解系统 | `index.md` → `vision.md` → `architecture.md` → `glossary.md` | 按需浏览 `features/`                  |
+
+完整指南: `spec/workflow/context-loading.md`
+
+---
+
+## 可用工具
+
+### CLI 工具
 
 ```bash
-# Validate specifications
-python3 mcp/cli.py validate spec
+# === 规格管理 ===
+python3 mcp/cli.py validate spec           # 验证规格一致性
+python3 mcp/cli.py compile spec generated   # 从规格生成代码
+python3 mcp/cli.py graph spec tree          # 可视化规格层级
+python3 mcp/cli.py list spec                # 列出功能和状态
+python3 mcp/cli.py read core/vision.md      # 读取规格文件
 
-# Generate code from specs
-python3 mcp/cli.py compile spec generated
+# === 创建 ===
+python3 mcp/cli.py create-feature my-feature --goals "目标1, 目标2"
+python3 mcp/cli.py create-adr "决策标题" --context "上下文" --decision "决策"
 
-# Visualize spec hierarchy
-python3 mcp/cli.py graph spec tree
-
-# List features and status
-python3 mcp/cli.py list spec
-
-# Create new feature
-python3 mcp/cli.py create-feature my-feature --goals "goal1, goal2"
-
-# Create new ADR
-python3 mcp/cli.py create-adr "decision-title" --context "context" --decision "decision"
-
-# Read a spec file
-python3 mcp/cli.py read core/vision.md
-
-# === Patch Workflow (for bug fixes) ===
-
-# Create a patch for bug fix
-python3 mcp/cli.py create-patch ipv6-parse --problem "IPv6 parsing fails" --fix "Updated regex"
-
-# List all patches
+# === 补丁工作流 ===
+python3 mcp/cli.py create-patch <name> --problem "问题" --fix "修复"
 python3 mcp/cli.py list-patches
+python3 mcp/cli.py complete-patch <name>
 
-# Mark patch as complete
-python3 mcp/cli.py complete-patch ipv6-parse
+# === 开发循环 ===
+python3 tools/ai-dev-loop.py spec           # 完整循环
+python3 tools/ai-dev-loop.py spec --skip-tests
 ```
 
-### Python Tools
+---
 
-```bash
-# Validation
-python3 tools/spec-linter.py spec
+## AI Agent 行为规则
 
-# Code generation
-python3 tools/spec-compiler.py spec generated
+### 必须做的
+1. **先读 index** — 每次会话从 `spec/index.md` 开始
+2. **按需加载** — 不要一次加载所有文件，根据任务类型选择
+3. **规格驱动** — 所有实现必须有对应规格
+4. **记录决策** — 架构变更写 ADR，功能决策写 `decisions.md`
+5. **任务追溯** — 每个任务必须关联到规格
+6. **最小变更** — 每次变更尽可能小且聚焦
 
-# Visualization
-python3 tools/spec-graph.py spec tree
-python3 tools/spec-graph.py spec mermaid
-python3 tools/spec-graph.py spec json
+### 不能做的
+1. **不覆盖规格** — 通过 git 追踪变更，不要无记录重写
+2. **不猜测** — 不确定时向人类提问
+3. **不跳过验证** — 变更后运行 `validate` 确认无错误
+4. **不绕过审查门控** — 架构变更和新功能需要人类确认
 
-# Full dev loop
-python3 tools/ai-dev-loop.py spec
+### 审查门控
+
+| 操作              | 需要人类确认? |
+| ----------------- | ------------- |
+| 读取/分析文件     | ❌ 否          |
+| 运行验证和测试    | ❌ 否          |
+| 创建 Patch        | ❌ 否          |
+| 更新任务状态      | ❌ 否          |
+| 创建/修改功能规格 | ✅ 是          |
+| 创建 ADR          | ✅ 是          |
+| 修改架构文档      | ✅ 是          |
+| 删除/归档文件     | ✅ 是          |
+
+---
+
+## 变更分类
+
+| 变更类型 | 使用方式     | 路径                          |
+| -------- | ------------ | ----------------------------- |
+| Bug 修复 | Patch        | `changes/patches/fix-*.md`    |
+| 新功能   | Feature Spec | `spec/features/*/spec.md`     |
+| 架构变更 | ADR          | `spec/decisions/ADR-*.md`     |
+| 大型变更 | Proposal     | `changes/proposals/prop-*.md` |
+
+---
+
+## 工作流
+
+```
+1. 阅读 spec/index.md
+2. 根据任务类型加载上下文
+3. 检查愿景和架构约束
+4. 查看现有功能和决策
+5. 修改或创建规格
+6. 验证变更（python3 mcp/cli.py validate）
+7. 按需生成代码
 ```
 
-## AI Agent Rules
+---
 
-When working with this framework, follow these rules:
-
-1. **Read index first** - Always start with `spec/index.md`
-2. **Never overwrite specs** - Create new versions instead
-3. **Architecture changes require ADR** - Document decisions in `spec/decisions/`
-4. **Features must not conflict with architecture**
-5. **Deprecated specs go to archive** - Move to `spec/archive/`
-6. **Tasks must reference specs**
-7. **Use patches for bug fixes** - Small fixes use `changes/patches/`, not full proposals
-
-## When to Use What
-
-| Change Type | Use | Path |
-|-------------|-----|------|
-| Bug fix | Patch | `changes/patches/fix-*.md` |
-| New feature | Feature Spec | `spec/features/*/spec.md` |
-| Architecture change | ADR | `spec/decisions/ADR-*.md` |
-| Large change | Proposal | `changes/proposals/prop-*.md` |
-
-## Workflow
-
-```
-1. Read spec/index.md
-2. Understand vision and architecture
-3. Check existing features
-4. Modify or create specs
-5. Validate changes
-6. Generate code if needed
-```
-
-## Directory Structure
+## 目录结构
 
 ```
 spec/
-├── index.md          # AI entry point
-├── core/             # Vision, Architecture, Glossary
-├── features/         # Feature specs with tasks
-├── decisions/        # ADR documents
-├── workflow/         # Process rules
-└── archive/          # Deprecated specs
+├── index.md              # AI Agent 入口
+├── core/                  # 核心: 愿景、架构、术语
+├── features/              # 功能规格 + 任务
+│   ├── template.md        # 功能模板
+│   ├── tasks-template.md  # 任务模板
+│   └── <feature>/
+├── decisions/             # ADR 文档
+│   └── ADR-template.md    # ADR 模板
+├── workflow/              # 工作流规则
+│   └── context-loading.md # 上下文加载指南
+└── archive/               # 废弃规格
 
 changes/
-├── patches/          # Bug fixes (lightweight)
-│   ├── patch-template.md
-│   └── fix-*.md
-└── proposals/        # Larger changes (full review)
-    ├── proposal-template.md
-    └── prop-*.md
+├── patches/               # 轻量修复
+└── proposals/             # 大型变更提案
 ```
 
-## MCP Integration
+---
 
-For Claude Desktop or other MCP-compatible tools, use:
+## MCP Server 集成
 
 ```json
 {
@@ -133,10 +152,12 @@ For Claude Desktop or other MCP-compatible tools, use:
 }
 ```
 
-## Quick Actions
+---
 
-When asked to:
-- **Validate specs**: Run `python3 mcp/cli.py validate`
-- **Create feature**: Run `python3 mcp/cli.py create-feature <name>`
-- **Generate code**: Run `python3 mcp/cli.py compile`
-- **Show structure**: Run `python3 mcp/cli.py graph`
+## 错误处理
+
+遇到问题时：
+- **规格不完整** → 向人类提问，不要猜测
+- **规格冲突** → 列出冲突点，请人类决策
+- **实现不确定** → 提出 2-3 个方案供选择
+- **工具失败** → 记录错误，尝试替代方案
