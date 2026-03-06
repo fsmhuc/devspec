@@ -98,6 +98,26 @@ python3 tools/ai-dev-loop.py spec
 
 ---
 
+## 9. 混合模式（推荐）
+
+“对话驱动为主，命令驱动为辅”：
+
+```bash
+# 初始化 Claude 命令/技能模板
+python3 mcp/cli.py init
+
+# 查看推荐工作流
+python3 mcp/cli.py workflow
+
+# 关键检查点（可在对话过程中随时执行）
+python3 mcp/cli.py opsx:validate
+python3 mcp/cli.py opsx:compile
+python3 mcp/cli.py opsx:graph
+python3 mcp/cli.py opsx:loop
+```
+
+---
+
 ## 下一步
 
 - 阅读 `spec/workflow/ai-agent-rules.md` 了解 AI 行为规范

@@ -6,6 +6,9 @@ Usage:
     python mcp/cli.py validate [spec_root]
     python mcp/cli.py compile [spec_root] [output_dir]
     python mcp/cli.py graph [spec_root] [tree|mermaid|json]
+    python mcp/cli.py loop [spec_root] [--skip-tests]
+    python mcp/cli.py workflow
+    python mcp/cli.py init [--force] [--root <project_root>]
     python mcp/cli.py create-feature <name> [--goals "goal1, goal2"]
     python mcp/cli.py create-adr <title> --context "..." --decision "..."
     python mcp/cli.py create-patch <name> --problem "..." --fix "..."
@@ -19,6 +22,7 @@ import os
 import re
 import json
 import io
+import subprocess
 import contextlib
 import importlib.util
 from pathlib import Path
@@ -267,6 +271,151 @@ def spec_read(path: str, spec_root: str = "spec") -> str:
     return file_path.read_text()
 
 
+def spec_workflow_guide() -> str:
+    """Show recommended hybrid workflow (conversation-first + command checkpoints)."""
+    return """=== OpenSpec Hybrid Workflow ===
+
+Conversation-driven (default):
+1. Describe the goal to AI in natural language
+2. AI loads spec/index.md and related context
+3. AI proposes/implements focused changes
+
+Slash/command-driven checkpoints:
+- opsx:validate  -> python3 mcp/cli.py validate
+- opsx:compile   -> python3 mcp/cli.py compile spec generated
+- opsx:graph     -> python3 mcp/cli.py graph spec tree
+- opsx:loop      -> python3 mcp/cli.py loop spec
+
+Recommended rhythm:
+Talk to plan and implement, run commands at key checkpoints.
+"""
+
+
+def run_ai_dev_loop(spec_root: str = "spec", skip_tests: bool = False) -> str:
+    """Run the full AI development loop script."""
+    loop_script = project_root / "tools" / "ai-dev-loop.py"
+    cmd = ["python3", str(loop_script), spec_root]
+    if skip_tests:
+        cmd.append("--skip-tests")
+
+    completed = subprocess.run(cmd, capture_output=True, text=True)
+    output = (completed.stdout or "") + ("\n" + completed.stderr if completed.stderr else "")
+    output = output.strip()
+
+    if completed.returncode != 0:
+        return f"AI Dev Loop failed (exit={completed.returncode})\n\n{output}"
+
+    return output if output else "AI Dev Loop completed successfully."
+
+
+def _write_scaffold_file(path: Path, content: str, force: bool, created: list, skipped: list):
+    if path.exists() and not force:
+        skipped.append(path)
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content)
+    created.append(path)
+
+
+def spec_init(root: str = ".", force: bool = False) -> str:
+    """Initialize Claude command/skill scaffolding for hybrid workflow."""
+    root_path = Path(root).resolve()
+    commands_dir = root_path / ".claude" / "commands"
+    skills_dir = root_path / ".claude" / "skills"
+
+    command_files = {
+        "opsx-start.md": """---
+description: OpenSpec 对话式启动（加载上下文并制定下一步）
+---
+
+请按 OpenSpec 规则执行：
+1. 先读取 spec/index.md
+2. 根据任务类型按需加载上下文
+3. 给出最小可执行计划并开始实施
+""",
+        "opsx-validate.md": """---
+description: OpenSpec 校验检查点
+---
+
+运行命令：python3 mcp/cli.py opsx:validate
+然后总结 errors/warnings，并给出下一步。
+""",
+        "opsx-compile.md": """---
+description: OpenSpec 规格编译检查点
+---
+
+运行命令：python3 mcp/cli.py opsx:compile
+然后总结生成产物与后续行动。
+""",
+        "opsx-graph.md": """---
+description: OpenSpec 规格结构可视化检查点
+---
+
+运行命令：python3 mcp/cli.py opsx:graph
+输出并解释当前规格层级结构。
+""",
+        "opsx-loop.md": """---
+description: OpenSpec 完整开发循环检查点
+---
+
+运行命令：python3 mcp/cli.py opsx:loop
+汇总验证、生成、测试、分析结果。
+""",
+        "opsx-workflow.md": """---
+description: 查看 OpenSpec 混合工作流建议
+---
+
+运行命令：python3 mcp/cli.py workflow
+并按“对话优先 + 命令检查点”模式推进。
+""",
+    }
+
+    skill_content = """# OpenSpec Hybrid Skill
+
+## 目标
+使用“对话驱动为主，命令驱动为辅”完成 OpenSpec 工作流。
+
+## 默认行为
+1. 对话中先澄清目标与约束
+2. 先读 spec/index.md，再按需加载上下文
+3. 在关键节点执行命令检查点：validate / compile / graph / loop
+
+## 命令映射
+- opsx:validate
+- opsx:compile
+- opsx:graph
+- opsx:loop
+"""
+
+    created = []
+    skipped = []
+
+    for filename, content in command_files.items():
+        _write_scaffold_file(commands_dir / filename, content, force, created, skipped)
+
+    _write_scaffold_file(skills_dir / "openspec-hybrid.md", skill_content, force, created, skipped)
+
+    lines = ["=== OpenSpec Init Complete ===", ""]
+    lines.append(f"Root: {root_path}")
+    lines.append("Scaffold:")
+    lines.append("  - .claude/commands/opsx-*.md")
+    lines.append("  - .claude/skills/openspec-hybrid.md")
+
+    lines.append("")
+    lines.append(f"Created: {len(created)}")
+    for path in created:
+        lines.append(f"  + {path.relative_to(root_path)}")
+
+    if skipped:
+        lines.append("")
+        lines.append(f"Skipped (already exists): {len(skipped)}")
+        for path in skipped:
+            lines.append(f"  - {path.relative_to(root_path)}")
+        lines.append("Use --force to overwrite scaffold files.")
+
+    return "\n".join(lines)
+
+
 def create_patch(name: str, problem: str = "", fix: str = "", impact: str = "") -> str:
     """Create a new patch file for bug fixes."""
     patches_dir = project_root / "changes" / "patches"
@@ -402,6 +551,18 @@ def main():
 
     command = sys.argv[1]
 
+    alias_to_command = {
+        "opsx:validate": "validate",
+        "opsx:compile": "compile",
+        "opsx:graph": "graph",
+        "opsx:list": "list",
+        "opsx:list-patches": "list-patches",
+        "opsx:workflow": "workflow",
+        "opsx:loop": "loop",
+    }
+    if command in alias_to_command:
+        command = alias_to_command[command]
+
     try:
         if command == "validate":
             spec_root = sys.argv[2] if len(sys.argv) > 2 else "spec"
@@ -416,6 +577,24 @@ def main():
             spec_root = sys.argv[2] if len(sys.argv) > 2 else "spec"
             fmt = sys.argv[3] if len(sys.argv) > 3 else "tree"
             print(spec_graph_output(spec_root, fmt))
+
+        elif command == "loop":
+            spec_root = "spec"
+            if len(sys.argv) > 2 and not sys.argv[2].startswith("--"):
+                spec_root = sys.argv[2]
+            skip_tests = "--skip-tests" in sys.argv
+            print(run_ai_dev_loop(spec_root, skip_tests))
+
+        elif command == "workflow":
+            print(spec_workflow_guide())
+
+        elif command == "init":
+            force = "--force" in sys.argv
+            root = "."
+            if "--root" in sys.argv:
+                idx = sys.argv.index("--root")
+                root = sys.argv[idx + 1] if idx + 1 < len(sys.argv) else "."
+            print(spec_init(root=root, force=force))
 
         elif command == "create-feature":
             if len(sys.argv) < 3:
