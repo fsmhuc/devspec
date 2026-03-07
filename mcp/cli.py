@@ -7,6 +7,7 @@ Usage:
     python mcp/cli.py compile [spec_root] [output_dir]
     python mcp/cli.py graph [spec_root] [tree|mermaid|json]
     python mcp/cli.py loop [spec_root] [--skip-tests]
+    python mcp/cli.py impact [--base <ref>] [--format json|text]
     python mcp/cli.py workflow
     python mcp/cli.py init [--force] [--root <project_root>]
     python mcp/cli.py create-feature <name> [--goals "goal1, goal2"]
@@ -45,6 +46,23 @@ def load_module(name: str, path: Path):
 spec_linter = load_module("spec_linter", tools_dir / "spec-linter.py")
 spec_compiler = load_module("spec_compiler", tools_dir / "spec-compiler.py")
 spec_graph = load_module("spec_graph", tools_dir / "spec-graph.py")
+
+
+def run_impact_analysis(spec_root: str = "spec", base_ref: str = "HEAD~1", fmt: str = "text") -> str:
+    """Run impact analysis on code changes."""
+    analyzer_path = tools_dir / "impact-analyzer.py"
+    if not analyzer_path.exists():
+        return "Error: impact-analyzer.py not found in tools/"
+
+    cmd = [sys.executable, str(analyzer_path), "--spec-root", spec_root, "--base", base_ref, "--format", fmt]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        output = (result.stdout or "") + ("\n" + result.stderr if result.stderr else "")
+        return output.strip() or "Impact analysis completed (no output)."
+    except subprocess.TimeoutExpired:
+        return "Error: Impact analysis timed out (60s)"
+    except Exception as e:
+        return f"Error: {e}"
 
 
 def spec_validate(spec_root: str = "spec") -> str:
@@ -597,6 +615,7 @@ def main():
         "opsx:list-patches": "list-patches",
         "opsx:workflow": "workflow",
         "opsx:loop": "loop",
+        "opsx:impact": "impact",
     }
     if command in alias_to_command:
         command = alias_to_command[command]
@@ -623,6 +642,25 @@ def main():
             skip_tests = "--skip-tests" in sys.argv
             print(run_ai_dev_loop(spec_root, skip_tests))
 
+        elif command == "impact":
+            spec_root = "spec"
+            base_ref = "HEAD~1"
+            fmt = "text"
+            args = sys.argv[2:]
+            i = 0
+            while i < len(args):
+                if args[i] == "--base" and i + 1 < len(args):
+                    base_ref = args[i + 1]
+                    i += 2
+                elif args[i] == "--format" and i + 1 < len(args):
+                    fmt = args[i + 1]
+                    i += 2
+                elif args[i] == "--spec-root" and i + 1 < len(args):
+                    spec_root = args[i + 1]
+                    i += 2
+                else:
+                    i += 1
+            print(run_impact_analysis(spec_root, base_ref, fmt))
         elif command == "workflow":
             print(spec_workflow_guide())
 

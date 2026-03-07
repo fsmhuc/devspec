@@ -48,4 +48,5 @@ python3 mcp/cli.py compile spec generated  # 生成代码
 python3 mcp/cli.py graph spec tree   # 查看结构
 python3 mcp/cli.py list spec         # 列出功能
 python3 tools/ai-dev-loop.py spec    # 完整开发循环（含测试阻断）
+python3 tools/impact-analyzer.py      # 波及分析（变更影响范围测试）
 ```

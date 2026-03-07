@@ -5,15 +5,16 @@ OpenSpec AI Dev Loop - Automated development cycle
 Orchestrates:
 1. Spec validation
 2. Code generation
-3. Test execution
-4. Spec update based on results
+3. Impact analysis
+4. Test execution
+5. Spec update based on results
 """
 
 import os
 import sys
 import subprocess
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 from dataclasses import dataclass
 
 
@@ -37,21 +38,23 @@ class AIDevLoop:
         print("=" * 50)
         print()
 
-        # Stage 1: Validate specs
         if not self.stage_validate():
             self.print_summary()
             return False
 
-        # Stage 2: Generate artifacts
         if not self.stage_generate():
             self.print_summary()
             return False
 
-        # Stage 3: Run tests (optional)
+        affected_tests: Optional[List[str]] = None
         if not skip_tests:
-            self.stage_test()
+            affected_tests = self.stage_impact_analysis()
 
-        # Stage 4: Analyze and suggest updates
+        if not skip_tests:
+            if not self.stage_test(affected_tests):
+                self.print_summary()
+                return False
+
         self.stage_analyze()
 
         self.print_summary()
@@ -59,7 +62,7 @@ class AIDevLoop:
 
     def stage_validate(self) -> bool:
         """Validate all specifications."""
-        print("[1/4] Validating specifications...")
+        print("[1/5] Validating specifications...")
         print("-" * 30)
 
         linter_path = Path(__file__).parent / "spec-linter.py"
@@ -117,7 +120,7 @@ class AIDevLoop:
 
     def stage_generate(self) -> bool:
         """Generate code artifacts from specs."""
-        print("\n[2/4] Generating artifacts...")
+        print("\n[2/5] Generating artifacts...")
         print("-" * 30)
 
         compiler_path = Path(__file__).parent / "spec-compiler.py"
@@ -150,12 +153,100 @@ class AIDevLoop:
         ))
         return True
 
-    def stage_test(self) -> bool:
-        """Run tests on generated code. Test failure is blocking."""
-        print("\n[3/4] Running tests...")
+    def stage_impact_analysis(self) -> Optional[List[str]]:
+        """Run impact analysis to determine which tests are affected."""
+        print("\n[3/5] Running impact analysis...")
         print("-" * 30)
 
-        # Check for test runner
+        analyzer_path = Path(__file__).parent / "impact-analyzer.py"
+        if not analyzer_path.exists():
+            print("Impact analyzer not available, skipping")
+            self.results.append(LoopResult(
+                stage="impact",
+                success=True,
+                message="Skipped - impact analyzer not available",
+                details=[]
+            ))
+            return None
+
+        try:
+            result = subprocess.run(
+                [sys.executable, str(analyzer_path), "--format", "json"],
+                capture_output=True,
+                text=True,
+                timeout=60
+            )
+
+            import json
+            report = json.loads(result.stdout)
+
+            affected = [t["path"] for t in report.get("affected_tests", [])]
+            changed_count = len(report.get("changed_files", []))
+            ai_needed = report.get("ai_suggestion_needed", False)
+
+            print(f"Changed files: {changed_count}")
+            print(f"Affected tests: {len(affected)}")
+            if ai_needed:
+                print("⚡ Cross-module changes detected — AI Layer 3 analysis recommended")
+                for c in report.get("cross_module_changes", []):
+                    print(f"  {c}")
+
+            if report.get("fallback"):
+                print("⚠️  Impact analysis failed, falling back to full test run")
+                self.results.append(LoopResult(
+                    stage="impact",
+                    success=True,
+                    message=f"Fallback to full test run: {report.get('error', 'unknown')}",
+                    details=[]
+                ))
+                return None
+
+            self.results.append(LoopResult(
+                stage="impact",
+                success=True,
+                message=f"Identified {len(affected)} affected tests from {changed_count} changed files",
+                details=affected
+            ))
+            return affected if affected else None
+
+        except (json.JSONDecodeError, KeyError) as e:
+            print(f"Failed to parse impact report: {e}")
+            print("Falling back to full test run")
+            self.results.append(LoopResult(
+                stage="impact",
+                success=True,
+                message=f"Parse error, fallback to full test run: {e}",
+                details=[]
+            ))
+            return None
+        except subprocess.TimeoutExpired:
+            print("Impact analysis timed out, falling back to full test run")
+            self.results.append(LoopResult(
+                stage="impact",
+                success=True,
+                message="Timeout, fallback to full test run",
+                details=[]
+            ))
+            return None
+        except Exception as e:
+            print(f"Impact analysis error: {e}")
+            print("Falling back to full test run")
+            self.results.append(LoopResult(
+                stage="impact",
+                success=True,
+                message=f"Error, fallback to full test run: {e}",
+                details=[]
+            ))
+            return None
+
+    def stage_test(self, affected_tests: Optional[List[str]] = None) -> bool:
+        """Run tests. If affected_tests provided, run targeted tests only."""
+        print("\n[4/5] Running tests...")
+        print("-" * 30)
+
+        if affected_tests:
+            return self._run_targeted_tests(affected_tests)
+
         test_commands = [
             ["npm", "test"],
             ["yarn", "test"],
@@ -221,9 +312,152 @@ class AIDevLoop:
         ))
         return True
 
+    def _run_targeted_tests(self, affected_tests: List[str]) -> bool:
+        """Run only the specified affected tests (targeted test execution)."""
+        print(f"  Running {len(affected_tests)} targeted test(s)...")
+        for t in affected_tests:
+            print(f"    → {t}")
+        print()
+
+        # Group tests by runner type
+        py_tests = [t for t in affected_tests if t.endswith('.py')]
+        ts_js_tests = [t for t in affected_tests if t.endswith(('.test.ts', '.test.tsx', '.test.js', '.test.jsx'))]
+        go_tests = [t for t in affected_tests if t.endswith('_test.go')]
+
+        any_ran = False
+        all_passed = True
+
+        # Python tests via pytest
+        if py_tests:
+            any_ran = True
+            existing = [t for t in py_tests if Path(t).exists()]
+            if existing:
+                try:
+                    result = subprocess.run(
+                        [sys.executable, "-m", "pytest", "--tb=short", "-q"] + existing,
+                        capture_output=True,
+                        text=True,
+                        timeout=120
+                    )
+                    print(result.stdout)
+                    if result.returncode != 0:
+                        if result.stderr:
+                            print(result.stderr)
+                        self.results.append(LoopResult(
+                            stage="test",
+                            success=False,
+                            message=f"Targeted pytest failed ({len(existing)} files)",
+                            details=result.stdout.split("\n")
+                        ))
+                        all_passed = False
+                except FileNotFoundError:
+                    print("  pytest not found, skipping Python tests")
+                except subprocess.TimeoutExpired:
+                    print("  pytest timed out")
+                    self.results.append(LoopResult(
+                        stage="test",
+                        success=False,
+                        message="Targeted pytest timed out",
+                        details=[]
+                    ))
+                    all_passed = False
+            else:
+                print(f"  Skipped {len(py_tests)} Python test(s) — files not found")
+
+        # TypeScript/JavaScript tests via npx jest (or npm test with filter)
+        if ts_js_tests:
+            any_ran = True
+            existing = [t for t in ts_js_tests if Path(t).exists()]
+            if existing:
+                try:
+                    result = subprocess.run(
+                        ["npx", "jest", "--no-coverage"] + existing,
+                        capture_output=True,
+                        text=True,
+                        timeout=120
+                    )
+                    print(result.stdout)
+                    if result.returncode != 0:
+                        if result.stderr:
+                            print(result.stderr)
+                        self.results.append(LoopResult(
+                            stage="test",
+                            success=False,
+                            message=f"Targeted jest failed ({len(existing)} files)",
+                            details=result.stdout.split("\n")
+                        ))
+                        all_passed = False
+                except FileNotFoundError:
+                    print("  jest/npx not found, skipping JS/TS tests")
+                except subprocess.TimeoutExpired:
+                    print("  jest timed out")
+                    self.results.append(LoopResult(
+                        stage="test",
+                        success=False,
+                        message="Targeted jest timed out",
+                        details=[]
+                    ))
+                    all_passed = False
+            else:
+                print(f"  Skipped {len(ts_js_tests)} JS/TS test(s) — files not found")
+
+        # Go tests
+        if go_tests:
+            any_ran = True
+            # Go tests are run per package (directory)
+            go_packages = list({str(Path(t).parent) for t in go_tests if Path(t).exists()})
+            if go_packages:
+                pkg_args = ['./' + p + '/...' for p in go_packages]
+                try:
+                    result = subprocess.run(
+                        ["go", "test"] + pkg_args,
+                        capture_output=True,
+                        text=True,
+                        timeout=120
+                    )
+                    print(result.stdout)
+                    if result.returncode != 0:
+                        if result.stderr:
+                            print(result.stderr)
+                        self.results.append(LoopResult(
+                            stage="test",
+                            success=False,
+                            message=f"Targeted go test failed ({len(go_packages)} packages)",
+                            details=result.stdout.split("\n")
+                        ))
+                        all_passed = False
+                except FileNotFoundError:
+                    print("  go not found, skipping Go tests")
+                except subprocess.TimeoutExpired:
+                    print("  go test timed out")
+                    self.results.append(LoopResult(
+                        stage="test",
+                        success=False,
+                        message="Targeted go test timed out",
+                        details=[]
+                    ))
+                    all_passed = False
+            else:
+                print(f"  Skipped {len(go_tests)} Go test(s) — files not found")
+
+        if not any_ran:
+            print("  No targeted tests could be executed (files not found or runners unavailable)")
+            print("  Falling back to full test run...")
+            return self.stage_test(affected_tests=None)
+
+        if all_passed:
+            self.results.append(LoopResult(
+                stage="test",
+                success=True,
+                message=f"Targeted tests passed ({len(affected_tests)} files)",
+                details=affected_tests
+            ))
+
+        return all_passed
+
     def stage_analyze(self) -> bool:
         """Analyze results and suggest spec updates."""
-        print("\n[4/4] Analyzing results...")
+        print("\n[5/5] Analyzing results...")
         print("-" * 30)
 
         suggestions = []

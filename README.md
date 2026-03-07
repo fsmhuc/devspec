@@ -144,14 +144,16 @@ openspec-framework/
 │   │   ├── context-loading.md # 上下文加载指南
 │   │   ├── versioning.md      # 版本控制策略
 │   │   ├── patch-workflow.md  # 补丁工作流
-│   │   └── testing-strategy.md # TDD 与测试策略
+│   │   ├── testing-strategy.md # TDD 与测试策略
+│   │   └── impact-analysis.md # 波及分析与影响范围测试
 │   └── archive/               # 已废弃的规格
 ├── tools/                      # 自动化工具
 │   ├── spec-linter.py         # 规格验证
 │   ├── spec-compiler.py       # 代码生成
 │   ├── spec-graph.py          # 结构可视化
 │   ├── ai-dev-loop.py         # 开发循环编排
-│   └── run-loop.sh            # 循环运行脚本
+│   ├── run-loop.sh            # 循环运行脚本
+│   └── impact-analyzer.py     # 波及分析引擎
 ├── mcp/                        # MCP Server & CLI
 │   ├── cli.py                 # CLI 工具
 │   └── server.py              # MCP Server
@@ -178,11 +180,12 @@ openspec-framework/
 | **验证器**   | `python3 mcp/cli.py validate`              | 检查规格一致性和完整性 |
 | **编译器**   | `python3 mcp/cli.py compile`               | 从规格生成代码桩       |
 | **可视化**   | `python3 mcp/cli.py graph spec tree`       | 查看规格层级结构       |
-| **开发循环** | `python3 tools/ai-dev-loop.py spec`        | 验证→生成→测试→分析    |
+| **开发循环** | `python3 tools/ai-dev-loop.py spec`        | 验证→生成→波及分析→测试→分析    |
 | **功能创建** | `python3 mcp/cli.py create-feature <name>` | 创建功能规格骨架       |
 | **ADR 创建** | `python3 mcp/cli.py create-adr <title>`    | 创建架构决策记录       |
 | **混合初始化** | `python3 mcp/cli.py init`                 | 生成 Claude CLI / OpenCode 命令与技能模板 |
 | **工作流提示** | `python3 mcp/cli.py workflow`             | 查看混合模式推荐流程 |
+| **波及分析** | `python3 tools/impact-analyzer.py`         | 分析代码变更的测试影响范围 |
 
 ---
 
@@ -202,6 +205,7 @@ openspec-framework/
 - `opsx:graph`
 - `opsx:loop`
 - `opsx:workflow`
+- `opsx:impact`
 ---
 
 ## 核心原则

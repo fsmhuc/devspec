@@ -75,6 +75,16 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f package.json ]; then npm ci; fi
 
+      - name: Impact Analysis
+        run: |
+          python3 tools/impact-analyzer.py --base ${{ github.event.pull_request.base.sha || 'HEAD~1' }} --format json > impact-report.json || true
+
+      - name: Upload Impact Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: impact-report
+          path: impact-report.json
       - name: Run Tests
         run: |
           if [ -f pytest.ini ] || [ -f setup.cfg ] || [ -f pyproject.toml ]; then

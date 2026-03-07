@@ -17,6 +17,7 @@ Agent 必须按以下顺序阅读文档：
 | 5      | 功能规格   | `spec/features/*/spec.md`   | 功能级别的设计规格                       |
 | 6      | 任务列表   | `spec/features/*/tasks.md`  | 每个功能的实现任务                       |
 | 7      | 测试策略   | `spec/workflow/testing-strategy.md` | TDD 工作流与测试分层要求                 |
+| 7.5    | 波及分析   | `spec/workflow/impact-analysis.md`  | 变更影响分析与定向测试策略               |
 | 8      | 工作流规则 | `spec/workflow/`            | Agent 协作规则（修改任何规格前必须阅读） |
 
 ---
@@ -89,8 +90,9 @@ spec/
 │   ├── spec-workflow.md   # 规格编写流程
 │   ├── context-loading.md # 上下文加载指南
 │   ├── versioning.md      # 版本控制策略
-│   └── patch-workflow.md  # 补丁工作流
+│   ├── patch-workflow.md  # 补丁工作流
 │   ├── testing-strategy.md # TDD 与测试策略
+│   └── impact-analysis.md # 波及分析（变更影响与定向测试）
 └── archive/               # 已废弃的规格
 
 changes/
