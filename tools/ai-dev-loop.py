@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OpenSpec AI Dev Loop - Automated development cycle
+DevSpec AI Dev Loop - Automated development cycle
 
 Orchestrates:
 1. Spec validation
@@ -34,7 +34,7 @@ class AIDevLoop:
     def run(self, skip_tests: bool = False) -> bool:
         """Run the complete AI development loop."""
         print("=" * 50)
-        print("OpenSpec AI Development Loop")
+        print("DevSpec AI Development Loop")
         print("=" * 50)
         print()
 

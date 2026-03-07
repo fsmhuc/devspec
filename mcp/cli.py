@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OpenSpec CLI - Direct command-line interface for OpenSpec tools
+DevSpec CLI - Direct command-line interface for DevSpec tools
 
 Usage:
     python mcp/cli.py validate [spec_root]
@@ -76,7 +76,7 @@ def spec_validate(spec_root: str = "spec") -> str:
     linter.check_tasks()
     linter.check_orphans()
 
-    lines = ["=== OpenSpec Validation Results ===\n"]
+    lines = ["=== DevSpec Validation Results ===\n"]
     if linter.errors:
         lines.append("ERRORS:")
         for error in linter.errors:
@@ -97,7 +97,7 @@ def spec_compile(spec_root: str = "spec", output_dir: str = "generated") -> str:
     """Compile specs to code artifacts."""
     compiler = spec_compiler.SpecCompiler(spec_root, output_dir)
     compiler.compile_all()
-    lines = ["=== OpenSpec Compilation Complete ===\n"]
+    lines = ["=== DevSpec Compilation Complete ===\n"]
     lines.append(f"Output directory: {output_dir}/")
     lines.append("\nGenerated artifacts:")
     lines.append("  - stubs/     TypeScript implementation stubs")
@@ -291,7 +291,7 @@ def spec_read(path: str, spec_root: str = "spec") -> str:
 
 def spec_workflow_guide() -> str:
     """Show recommended hybrid workflow (conversation-first + command checkpoints)."""
-    return """=== OpenSpec Hybrid Workflow ===
+    return """=== DevSpec Hybrid Workflow ===
 
 Conversation-driven (default):
 1. Describe the goal to AI in natural language
@@ -299,10 +299,10 @@ Conversation-driven (default):
 3. AI proposes/implements focused changes
 
 Slash/command-driven checkpoints:
-- opsx:validate  -> python3 mcp/cli.py validate
-- opsx:compile   -> python3 mcp/cli.py compile spec generated
-- opsx:graph     -> python3 mcp/cli.py graph spec tree
-- opsx:loop      -> python3 mcp/cli.py loop spec
+- ds:validate  -> python3 mcp/cli.py validate
+- ds:compile   -> python3 mcp/cli.py compile spec generated
+- ds:graph     -> python3 mcp/cli.py graph spec tree
+- ds:loop      -> python3 mcp/cli.py loop spec
 
 Recommended rhythm:
 Talk to plan and implement, run commands at key checkpoints.
@@ -341,48 +341,48 @@ def spec_init(root: str = ".", force: bool = False) -> str:
     claude_commands_dir = root_path / ".claude" / "commands"
     claude_skills_dir = root_path / ".claude" / "skills"
     opencode_commands_dir = root_path / ".opencode" / "commands"
-    opencode_skills_dir = root_path / ".opencode" / "skills" / "openspec-hybrid"
+    opencode_skills_dir = root_path / ".opencode" / "skills" / "devspec-hybrid"
 
     command_files = {
-        "opsx-start.md": """---
-description: OpenSpec 对话式启动（加载上下文并制定下一步）
+        "ds-start.md": """---
+description: DevSpec 对话式启动（加载上下文并制定下一步）
 ---
 
-请按 OpenSpec 规则执行：
+请按 DevSpec 规则执行：
 1. 先读取 spec/index.md
 2. 根据任务类型按需加载上下文
 3. 给出最小可执行计划并开始实施
 """,
-        "opsx-validate.md": """---
-description: OpenSpec 校验检查点
+        "ds-validate.md": """---
+description: DevSpec 校验检查点
 ---
 
-运行命令：python3 mcp/cli.py opsx:validate
+运行命令：python3 mcp/cli.py ds:validate
 然后总结 errors/warnings，并给出下一步。
 """,
-        "opsx-compile.md": """---
-description: OpenSpec 规格编译检查点
+        "ds-compile.md": """---
+description: DevSpec 规格编译检查点
 ---
 
-运行命令：python3 mcp/cli.py opsx:compile
+运行命令：python3 mcp/cli.py ds:compile
 然后总结生成产物与后续行动。
 """,
-        "opsx-graph.md": """---
-description: OpenSpec 规格结构可视化检查点
+        "ds-graph.md": """---
+description: DevSpec 规格结构可视化检查点
 ---
 
-运行命令：python3 mcp/cli.py opsx:graph
+运行命令：python3 mcp/cli.py ds:graph
 输出并解释当前规格层级结构。
 """,
-        "opsx-loop.md": """---
-description: OpenSpec 完整开发循环检查点
+        "ds-loop.md": """---
+description: DevSpec 完整开发循环检查点
 ---
 
-运行命令：python3 mcp/cli.py opsx:loop
+运行命令：python3 mcp/cli.py ds:loop
 汇总验证、生成、测试、分析结果。
 """,
-        "opsx-workflow.md": """---
-description: 查看 OpenSpec 混合工作流建议
+        "ds-workflow.md": """---
+description: 查看 DevSpec 混合工作流建议
 ---
 
 运行命令：python3 mcp/cli.py workflow
@@ -391,10 +391,10 @@ description: 查看 OpenSpec 混合工作流建议
     }
 
     # Claude CLI skill (flat file)
-    claude_skill_content = """# OpenSpec Hybrid Skill
+    claude_skill_content = """# DevSpec Hybrid Skill
 
 ## 目标
-使用"对话驱动为主，命令驱动为辅"完成 OpenSpec 工作流。
+使用"对话驱动为主，命令驱动为辅"完成 DevSpec 工作流。
 
 ## 默认行为
 1. 对话中先澄清目标与约束
@@ -402,22 +402,22 @@ description: 查看 OpenSpec 混合工作流建议
 3. 在关键节点执行命令检查点：validate / compile / graph / loop
 
 ## 命令映射
-- opsx:validate
-- opsx:compile
-- opsx:graph
-- opsx:loop
+- ds:validate
+- ds:compile
+- ds:graph
+- ds:loop
 """
 
     # OpenCode skill (directory-based SKILL.md with required name + description frontmatter)
     opencode_skill_content = """---
-name: openspec-hybrid
-description: OpenSpec 混合工作流技能 — 对话驱动为主，命令检查点为辅，驱动规格验证、编译、可视化与开发循环
+name: devspec-hybrid
+description: DevSpec 混合工作流技能 — 对话驱动为主，命令检查点为辅，驱动规格验证、编译、可视化与开发循环
 ---
 
-# OpenSpec Hybrid Skill
+# DevSpec Hybrid Skill
 
 ## 目标
-使用"对话驱动为主，命令驱动为辅"完成 OpenSpec 工作流。
+使用"对话驱动为主，命令驱动为辅"完成 DevSpec 工作流。
 
 ## 默认行为
 1. 对话中先澄清目标与约束
@@ -425,11 +425,11 @@ description: OpenSpec 混合工作流技能 — 对话驱动为主，命令检�
 3. 在关键节点执行命令检查点：validate / compile / graph / loop
 
 ## 命令映射
-- opsx:validate  -> python3 mcp/cli.py opsx:validate
-- opsx:compile   -> python3 mcp/cli.py opsx:compile
-- opsx:graph     -> python3 mcp/cli.py opsx:graph
-- opsx:loop      -> python3 mcp/cli.py opsx:loop
-- opsx:workflow  -> python3 mcp/cli.py workflow
+- ds:validate  -> python3 mcp/cli.py ds:validate
+- ds:compile   -> python3 mcp/cli.py ds:compile
+- ds:graph     -> python3 mcp/cli.py ds:graph
+- ds:loop      -> python3 mcp/cli.py ds:loop
+- ds:workflow  -> python3 mcp/cli.py workflow
 """
 
     created = []
@@ -439,7 +439,7 @@ description: OpenSpec 混合工作流技能 — 对话驱动为主，命令检�
     for filename, content in command_files.items():
         _write_scaffold_file(claude_commands_dir / filename, content, force, created, skipped)
 
-    _write_scaffold_file(claude_skills_dir / "openspec-hybrid.md", claude_skill_content, force, created, skipped)
+    _write_scaffold_file(claude_skills_dir / "devspec-hybrid.md", claude_skill_content, force, created, skipped)
 
     # Generate OpenCode scaffolding
     for filename, content in command_files.items():
@@ -447,15 +447,15 @@ description: OpenSpec 混合工作流技能 — 对话驱动为主，命令检�
 
     _write_scaffold_file(opencode_skills_dir / "SKILL.md", opencode_skill_content, force, created, skipped)
 
-    lines = ["=== OpenSpec Init Complete ===", ""]
+    lines = ["=== DevSpec Init Complete ===", ""]
     lines.append(f"Root: {root_path}")
     lines.append("Scaffold:")
     lines.append("  Claude CLI:")
-    lines.append("    - .claude/commands/opsx-*.md")
-    lines.append("    - .claude/skills/openspec-hybrid.md")
+    lines.append("    - .claude/commands/ds-*.md")
+    lines.append("    - .claude/skills/devspec-hybrid.md")
     lines.append("  OpenCode:")
-    lines.append("    - .opencode/commands/opsx-*.md")
-    lines.append("    - .opencode/skills/openspec-hybrid/SKILL.md")
+    lines.append("    - .opencode/commands/ds-*.md")
+    lines.append("    - .opencode/skills/devspec-hybrid/SKILL.md")
 
     lines.append("")
     lines.append(f"Created: {len(created)}")
@@ -608,14 +608,14 @@ def main():
     command = sys.argv[1]
 
     alias_to_command = {
-        "opsx:validate": "validate",
-        "opsx:compile": "compile",
-        "opsx:graph": "graph",
-        "opsx:list": "list",
-        "opsx:list-patches": "list-patches",
-        "opsx:workflow": "workflow",
-        "opsx:loop": "loop",
-        "opsx:impact": "impact",
+        "ds:validate": "validate",
+        "ds:compile": "compile",
+        "ds:graph": "graph",
+        "ds:list": "list",
+        "ds:list-patches": "list-patches",
+        "ds:workflow": "workflow",
+        "ds:loop": "loop",
+        "ds:impact": "impact",
     }
     if command in alias_to_command:
         command = alias_to_command[command]

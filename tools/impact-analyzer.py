@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OpenSpec Impact Analyzer - 波及分析引擎
+DevSpec Impact Analyzer - 波及分析引擎
 
 Three-layer impact analysis model:
   Layer 1 (deterministic): git diff → changed files → convention-based test mapping
@@ -108,12 +108,12 @@ class ImpactAnalyzer:
     # ------------------------------------------------------------------
 
     def _load_config(self, config_path: Optional[str]) -> List[dict]:
-        """Load mapping rules from .openspec/impact.yml or use defaults."""
+        """Load mapping rules from .devspec/impact.yml or use defaults."""
         candidates = [
             config_path,
-            str(self.project_root / ".openspec" / "impact.yml"),
-            str(self.project_root / ".openspec" / "impact.yaml"),
-            str(self.project_root / ".openspec" / "impact.json"),
+            str(self.project_root / ".devspec" / "impact.yml"),
+            str(self.project_root / ".devspec" / "impact.yaml"),
+            str(self.project_root / ".devspec" / "impact.json"),
         ]
         for path in candidates:
             if path and Path(path).exists():
@@ -447,7 +447,7 @@ def format_text(report: ImpactReport) -> str:
     """Format report as human-readable text."""
     lines: List[str] = []
     lines.append("=" * 50)
-    lines.append("OpenSpec 波及分析报告")
+    lines.append("DevSpec 波及分析报告")
     lines.append("=" * 50)
     lines.append(f"\n基准: {report.base_ref}")
     lines.append(f"变更文件数: {len(report.changed_files)}")
@@ -485,7 +485,7 @@ def format_text(report: ImpactReport) -> str:
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description="OpenSpec Impact Analyzer — 波及分析引擎")
+    parser = argparse.ArgumentParser(description="DevSpec Impact Analyzer — 波及分析引擎")
     parser.add_argument("--base", default="HEAD~1", help="Git diff base reference (default: HEAD~1)")
     parser.add_argument("--config", default=None, help="Path to impact config file")
     parser.add_argument("--spec-root", default="spec", help="Spec root directory (default: spec)")

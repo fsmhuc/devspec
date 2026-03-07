@@ -21,9 +21,9 @@ python3 mcp/cli.py graph spec tree
 示例输出:
 
 ```
-OpenSpec Hierarchy
+DevSpec Hierarchy
 
-└── 📁 OpenSpec
+└── 📁 DevSpec
     ├── 🎯 愿景
     ├── 🏗️ 架构
     ├── 📚 功能

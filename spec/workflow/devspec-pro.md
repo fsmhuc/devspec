@@ -1,4 +1,4 @@
-# OpenSpec Pro
+# DevSpec Pro
 
 > 高级 AI 原生规格系统的工具链。
 
@@ -64,7 +64,7 @@ python3 tools/ai-dev-loop.py spec --skip-tests
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    OpenSpec Pro                          │
+│                    DevSpec Pro                          │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │   spec/                                                 │

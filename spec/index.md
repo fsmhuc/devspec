@@ -1,4 +1,4 @@
-# OpenSpec 规格索引
+# DevSpec 规格索引
 
 > 这是所有 AI Agent 的入口文件。每次会话开始时，Agent 必须首先阅读此文件。
 

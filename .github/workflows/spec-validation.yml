@@ -1,4 +1,4 @@
-name: OpenSpec Validation
+name: DevSpec Validation
 
 on:
   push:

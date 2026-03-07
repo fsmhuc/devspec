@@ -1,8 +1,8 @@
 {
     "mcpServers": {
-        "openspec": {
+        "devspec": {
             "command": "python3",
-            "args": ["/path/to/openspec-framework/mcp/server.py"],
+            "args": ["/path/to/devspec/mcp/server.py"],
             "env": {}
         }
     }

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-OpenSpec MCP Server
+DevSpec MCP Server
 
-Provides OpenSpec tools as MCP (Model Context Protocol) tools
+Provides DevSpec tools as MCP (Model Context Protocol) tools
 that can be directly invoked by Claude and other AI assistants.
 
 Usage:
@@ -11,9 +11,9 @@ Usage:
 Or add to Claude Desktop config:
     {
         "mcpServers": {
-            "openspec": {
+            "devspec": {
                 "command": "python",
-                "args": ["/path/to/openspec-framework/mcp/server.py"]
+                "args": ["/path/to/devspec/mcp/server.py"]
             }
         }
     }
@@ -104,12 +104,12 @@ class MCPServer:
 
 
 # Create server
-server = MCPServer("openspec", "1.0.0")
+server = MCPServer("devspec", "1.0.0")
 
 
 @server.tool(
     "spec_validate",
-    "Validate OpenSpec specifications for consistency and completeness",
+    "Validate DevSpec specifications for consistency and completeness",
     {
         "spec_root": {
             "type": "string",
@@ -134,7 +134,7 @@ def spec_validate(spec_root: str = "spec") -> str:
     linter.check_orphans()
 
     # Format results
-    lines = ["=== OpenSpec Validation Results ===\n"]
+    lines = ["=== DevSpec Validation Results ===\n"]
 
     if linter.errors:
         lines.append("ERRORS:")
@@ -158,7 +158,7 @@ def spec_validate(spec_root: str = "spec") -> str:
 
 @server.tool(
     "spec_compile",
-    "Generate code artifacts from OpenSpec specifications",
+    "Generate code artifacts from DevSpec specifications",
     {
         "spec_root": {
             "type": "string",
@@ -179,7 +179,7 @@ def spec_compile(spec_root: str = "spec", output_dir: str = "generated") -> str:
     compiler = SpecCompiler(spec_root, output_dir)
     compiler.compile_all()
 
-    lines = ["=== OpenSpec Compilation Complete ===\n"]
+    lines = ["=== DevSpec Compilation Complete ===\n"]
     lines.append(f"Output directory: {output_dir}/")
     lines.append("\nGenerated artifacts:")
     lines.append("  - stubs/     TypeScript implementation stubs")
@@ -192,7 +192,7 @@ def spec_compile(spec_root: str = "spec", output_dir: str = "generated") -> str:
 
 @server.tool(
     "spec_graph",
-    "Generate visualization of OpenSpec hierarchy",
+    "Generate visualization of DevSpec hierarchy",
     {
         "spec_root": {
             "type": "string",
@@ -483,7 +483,7 @@ if __name__ == "__main__":
         if tool_name in server.tools:
             # Parse arguments
             import argparse
-            parser = argparse.ArgumentParser(description=f"OpenSpec {tool_name}")
+            parser = argparse.ArgumentParser(description=f"DevSpec {tool_name}")
             for param, schema in server.tools[tool_name]["parameters"].items():
                 parser.add_argument(f"--{param}",
                                    default=schema.get("default"),

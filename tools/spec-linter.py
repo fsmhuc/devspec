@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OpenSpec Linter - Validates specification consistency
+DevSpec Linter - Validates specification consistency
 
 Checks:
 1. All specs have required sections
@@ -26,7 +26,7 @@ class SpecLinter:
 
     def lint_all(self) -> bool:
         """Run all linting checks."""
-        print("=== OpenSpec Linter ===\n")
+        print("=== DevSpec Linter ===\n")
 
         self.check_index()
         self.check_vision()

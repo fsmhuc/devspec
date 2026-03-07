@@ -1,6 +1,6 @@
 # 快速开始
 
-5 分钟上手 OpenSpec Framework。
+5 分钟上手 DevSpec。
 
 ---
 
@@ -110,10 +110,10 @@ python3 mcp/cli.py init
 python3 mcp/cli.py workflow
 
 # 关键检查点（可在对话过程中随时执行）
-python3 mcp/cli.py opsx:validate
-python3 mcp/cli.py opsx:compile
-python3 mcp/cli.py opsx:graph
-python3 mcp/cli.py opsx:loop
+python3 mcp/cli.py ds:validate
+python3 mcp/cli.py ds:compile
+python3 mcp/cli.py ds:graph
+python3 mcp/cli.py ds:loop
 ```
 
 ---

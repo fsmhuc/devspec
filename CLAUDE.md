@@ -1,4 +1,4 @@
-# OpenSpec Framework — AI Agent 配置
+# DevSpec — AI Agent 配置
 
 > 本文件为 AI 编码 Agent 提供项目级指令。适用于 Claude Code、Cursor、Windsurf 等工具。
 
@@ -6,7 +6,7 @@
 
 ## 项目概述
 
-OpenSpec 是一个 AI 原生的规格框架，用于 AI Agent 与人类协作开发软件。
+DevSpec 是一个 AI 原生的规格框架，用于 AI Agent 与人类协作开发软件。
 它通过结构化的规格文档驱动开发，确保设计一致性和决策可追溯性。
 
 ---
@@ -144,9 +144,9 @@ changes/
 ```json
 {
     "mcpServers": {
-        "openspec": {
+        "devspec": {
             "command": "python3",
-            "args": ["/path/to/openspec-framework/mcp/server.py"]
+            "args": ["/path/to/devspec/mcp/server.py"]
         }
     }
 }

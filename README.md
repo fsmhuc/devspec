@@ -1,14 +1,14 @@
-# OpenSpec Framework
+# DevSpec
 
 AI 原生的规格驱动开发框架 — 让 AI Agent 与人类高效协作开发软件。
 
 ---
 
-## 什么是 OpenSpec？
+## 什么是 DevSpec？
 
-OpenSpec 提供一套可复用的规格工作流，解决 AI 协作开发中的核心问题：
+DevSpec 提供一套可复用的规格工作流，解决 AI 协作开发中的核心问题：
 
-| 问题            | OpenSpec 方案            |
+| 问题            | DevSpec 方案            |
 | --------------- | ------------------------ |
 | 规格漂移        | 自动化验证保持一致性     |
 | AI 不知从何入手 | 结构化入口和行为规范     |
@@ -126,7 +126,7 @@ spec/index.md
 ## 项目结构
 
 ```
-openspec-framework/
+devspec/
 ├── spec/                       # 规格文档（框架核心）
 │   ├── index.md               # AI Agent 入口
 │   ├── core/                  # 核心: 愿景 & 架构
@@ -195,17 +195,17 @@ openspec-framework/
 
 - 对话驱动：让 AI 读取 `spec/index.md` 并按任务上下文推进设计与实现
 - 命令检查点：在关键节点执行 `validate / compile / graph / loop`
-- Slash 别名：可直接运行 `python3 mcp/cli.py opsx:validate` 等别名命令
+- Slash 别名：可直接运行 `python3 mcp/cli.py ds:validate` 等别名命令
 - 同时支持 **Claude CLI**（`.claude/commands/`）和 **OpenCode**（`.opencode/commands/`）
 
 可用别名：
 
-- `opsx:validate`
-- `opsx:compile`
-- `opsx:graph`
-- `opsx:loop`
-- `opsx:workflow`
-- `opsx:impact`
+- `ds:validate`
+- `ds:compile`
+- `ds:graph`
+- `ds:loop`
+- `ds:workflow`
+- `ds:impact`
 ---
 
 ## 核心原则
@@ -269,9 +269,9 @@ jobs:
 ```json
 {
     "mcpServers": {
-        "openspec": {
+        "devspec": {
             "command": "python3",
-            "args": ["/path/to/openspec-framework/mcp/server.py"]
+            "args": ["/path/to/devspec/mcp/server.py"]
         }
     }
 }
@@ -284,12 +284,12 @@ jobs:
 - [快速开始](docs/QUICKSTART.md)
 - [架构说明](docs/ARCHITECTURE.md)
 - [Architecture Overview](docs/ARCHITECTURE.md)
-- [OpenSpec Pro](spec/workflow/openspec-pro.md)
+- [DevSpec Pro](spec/workflow/devspec-pro.md)
 - [AI Agent Rules](spec/workflow/ai-agent-rules.md)
 
 ---
 
-## Why OpenSpec?
+## Why DevSpec?
 
 | Problem | Solution |
 |---------|----------|

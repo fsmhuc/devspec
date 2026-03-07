@@ -1,4 +1,4 @@
-# OpenSpec Framework
+# DevSpec
 
 AI 原生的规格驱动开发框架。
 
@@ -9,14 +9,14 @@ AI 原生的规格驱动开发框架。
 - [快速开始](docs/QUICKSTART.md)
 - [架构说明](docs/ARCHITECTURE.md)
 - [AI Agent 行为规范](spec/workflow/ai-agent-rules.md)
-- [OpenSpec Pro](spec/workflow/openspec-pro.md)
+- [DevSpec Pro](spec/workflow/devspec-pro.md)
 
 ---
 
 ## 项目结构
 
 ```
-openspec-framework/
+devspec/
 ├── README.md              # 项目说明
 ├── CLAUDE.md              # AI Agent 配置
 ├── spec/                  # 规格文档

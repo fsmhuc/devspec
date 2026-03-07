@@ -48,7 +48,7 @@
 | `src/**/*.js` | `tests/**/{basename}.test.js` |
 | `lib/**/*.go` | `lib/**/{basename}_test.go` |
 
-**自定义映射:** 在 `.openspec/impact.yml` 中配置:
+**自定义映射:** 在 `.devspec/impact.yml` 中配置:
 
 ```yaml
 mapping_rules:
@@ -176,7 +176,7 @@ python3 tools/impact-analyzer.py --format json
 
 # 通过 CLI 别名
 python3 mcp/cli.py impact
-python3 mcp/cli.py opsx:impact
+python3 mcp/cli.py ds:impact
 ```
 
 ### 编程接口
@@ -237,7 +237,7 @@ else:
 
 ## 配置文件
 
-可选的 `.openspec/impact.yml`:
+可选的 `.devspec/impact.yml`:
 
 ```yaml
 mapping_rules:

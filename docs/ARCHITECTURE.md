@@ -1,10 +1,10 @@
-# OpenSpec Framework 架构
+# DevSpec 架构
 
 ---
 
 ## 概述
 
-OpenSpec 是一个 AI 原生的规格框架，专为人类与 AI Agent 协作开发而设计。
+DevSpec 是一个 AI 原生的规格框架，专为人类与 AI Agent 协作开发而设计。
 
 ---
 
@@ -21,7 +21,7 @@ OpenSpec 是一个 AI 原生的规格框架，专为人类与 AI Agent 协作开
 ## 目录结构
 
 ```
-openspec-framework/
+devspec/
 ├── spec/                    # 规格文档（框架核心）
 │   ├── index.md            # AI Agent 入口
 │   ├── core/               # 愿景、架构、术语

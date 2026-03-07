@@ -1,6 +1,6 @@
 # AI Agent 指令
 
-> 本仓库使用 OpenSpec 框架管理规格和开发流程。所有 AI Agent 必须遵守以下规则。
+> 本仓库使用 DevSpec 框架管理规格和开发流程。所有 AI Agent 必须遵守以下规则。
 
 ## 入口
 

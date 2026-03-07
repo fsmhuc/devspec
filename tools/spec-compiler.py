@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OpenSpec Compiler - Transforms specs into actionable artifacts
+DevSpec Compiler - Transforms specs into actionable artifacts
 
 Generates:
 - Implementation stubs from specs
@@ -34,7 +34,7 @@ class SpecCompiler:
 
     def compile_all(self):
         """Compile all specs to artifacts."""
-        print("=== OpenSpec Compiler ===\n")
+        print("=== DevSpec Compiler ===\n")
 
         self.output_dir.mkdir(exist_ok=True)
 

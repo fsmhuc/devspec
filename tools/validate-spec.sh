@@ -1,5 +1,5 @@
 #!/bin/bash
-# OpenSpec Validation Script
+# DevSpec Validation Script
 # Quick validation entry point
 
 set -e
@@ -7,7 +7,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SPEC_ROOT="${1:-spec}"
 
-echo "=== OpenSpec Quick Validation ==="
+echo "=== DevSpec Quick Validation ==="
 echo ""
 
 # Check Python

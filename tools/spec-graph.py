@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OpenSpec Graph - Generates visualization of spec hierarchy
+DevSpec Graph - Generates visualization of spec hierarchy
 
 Outputs:
 - ASCII tree view
@@ -28,7 +28,7 @@ class SpecNode:
 class SpecGraph:
     def __init__(self, spec_root: str = "spec"):
         self.spec_root = Path(spec_root)
-        self.root: SpecNode = SpecNode("OpenSpec", "spec", "root")
+        self.root: SpecNode = SpecNode("DevSpec", "spec", "root")
 
     def build_graph(self) -> SpecNode:
         """Build the spec hierarchy graph."""
@@ -79,7 +79,7 @@ class SpecGraph:
         """Print ASCII tree visualization."""
         if node is None:
             node = self.root
-            print("OpenSpec Hierarchy\n")
+            print("DevSpec Hierarchy\n")
 
         connector = "└── " if is_last else "├── "
         type_emoji = {
@@ -104,7 +104,7 @@ class SpecGraph:
         """Generate Mermaid diagram."""
         lines = [
             "graph TD",
-            "    Root[OpenSpec Framework]",
+            "    Root[DevSpec]",
             "    Root --> Vision[Vision]",
             "    Root --> Arch[Architecture]",
             "    Root --> Features[Features]",
