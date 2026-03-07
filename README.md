@@ -145,7 +145,11 @@ devspec/
 │   │   ├── versioning.md      # 版本控制策略
 │   │   ├── patch-workflow.md  # 补丁工作流
 │   │   ├── testing-strategy.md # TDD 与测试策略
-│   │   └── impact-analysis.md # 波及分析与影响范围测试
+│   │   ├── impact-analysis.md # 波及分析与影响范围测试
+│   │   ├── verify.md          # 三维验证（ds:verify）
+│   │   ├── progressive-rigor.md # 渐进式严格度（Lite/Full）
+│   │   ├── delta-specs.md     # Delta Specs 增量变更工作流
+│   │   └── archive-workflow.md # 归档工作流
 │   └── archive/               # 已废弃的规格
 ├── tools/                      # 自动化工具
 │   ├── spec-linter.py         # 规格验证
@@ -164,7 +168,9 @@ devspec/
 │   └── patches/               # 示例: 补丁
 ├── changes/                    # 变更管理
 │   ├── patches/               # Bug 修复（轻量）
-│   └── proposals/             # 大型变更（需审查）
+│   ├── proposals/             # 大型变更提案 + Delta Specs
+│   │   └── delta-template.md  # Delta 模板
+│   └── archive/               # 已完成变更的归档
 └── .github/
     ├── copilot-instructions.md # AI 指令
     └── workflows/
@@ -178,11 +184,15 @@ devspec/
 | 工具         | 命令                                       | 说明                   |
 | ------------ | ------------------------------------------ | ---------------------- |
 | **验证器**   | `python3 mcp/cli.py validate`              | 检查规格一致性和完整性 |
+| **三维验证** | `python3 mcp/cli.py verify <feature>`      | 完整性/正确性/一致性语义验证 |
 | **编译器**   | `python3 mcp/cli.py compile`               | 从规格生成代码桩       |
 | **可视化**   | `python3 mcp/cli.py graph spec tree`       | 查看规格层级结构       |
 | **开发循环** | `python3 tools/ai-dev-loop.py spec`        | 验证→生成→波及分析→测试→分析    |
-| **功能创建** | `python3 mcp/cli.py create-feature <name>` | 创建功能规格骨架       |
+| **功能创建** | `python3 mcp/cli.py create-feature <name>` | 创建功能规格骨架（支持 --rigor） |
 | **ADR 创建** | `python3 mcp/cli.py create-adr <title>`    | 创建架构决策记录       |
+| **Delta 创建** | `python3 mcp/cli.py create-delta <name>`   | 创建增量规格变更       |
+| **归档**     | `python3 mcp/cli.py archive <name>`        | 归档已完成的变更       |
+| **归档列表** | `python3 mcp/cli.py list-archive`          | 查看已归档变更         |
 | **混合初始化** | `python3 mcp/cli.py init`                 | 生成 Claude CLI / OpenCode 命令与技能模板 |
 | **工作流提示** | `python3 mcp/cli.py workflow`             | 查看混合模式推荐流程 |
 | **波及分析** | `python3 tools/impact-analyzer.py`         | 分析代码变更的测试影响范围 |
@@ -201,11 +211,15 @@ devspec/
 可用别名：
 
 - `ds:validate`
+- `ds:verify`
 - `ds:compile`
 - `ds:graph`
 - `ds:loop`
 - `ds:workflow`
 - `ds:impact`
+- `ds:archive`
+- `ds:list-archive`
+- `ds:create-delta`
 ---
 
 ## 核心原则

@@ -85,6 +85,33 @@
 - 开发循环中测试阶段是阻断性的 — 失败即停止
 - CI 中测试失败阻断 PR 合并
 
+### 规则 8 — 规格变更使用 Delta
+
+修改现有规格时，必须使用 Delta Specs 格式描述变更意图，而不是直接编辑规格文件。
+
+- 创建 Delta: `python3 mcp/cli.py create-delta <name> --target <spec-path>`
+- 使用 `[ADDED]` / `[MODIFIED]` / `[REMOVED]` 标记
+- 审查通过后再合并到目标规格
+- 详见: `spec/workflow/delta-specs.md`
+
+### 规则 9 — 完成后归档
+
+已完成的变更（Patch / Proposal / Delta）必须归档，保持活动区干净。
+
+- 归档命令: `python3 mcp/cli.py archive <name>`
+- 归档后运行 `validate` 确认无断裂引用
+- 详见: `spec/workflow/archive-workflow.md`
+
+### 规则 10 — 三维验证
+
+功能完成时，运行 `ds:verify` 进行语义级验证（补充 `validate` 的结构检查）。
+
+- 验证命令: `python3 mcp/cli.py verify <feature>` 或 `verify --all`
+- 三个维度: 完整性、正确性、一致性
+- 根据严格等级（lite/full）调整检查项
+- 详见: `spec/workflow/verify.md`
+
+
 ---
 
 ## 审查门控（Review Gates）

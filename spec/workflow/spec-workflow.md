@@ -145,5 +145,18 @@
 | 修 Bug     | Patch 工作流 | 直接创建 patch |
 | 加新功能   | 完整工作流   | 从步骤 1 开始  |
 | 改架构     | 需要 ADR     | 从步骤 2 开始  |
-| 改现有功能 | 部分工作流   | 从步骤 3 开始  |
+| 改现有功能 | Delta Spec   | 创建 Delta，审查后合并 |
 | 纯文档更新 | 直接修改     | 直接改         |
+
+---
+
+## Delta Spec 快速参考
+
+修改现有规格时，使用 Delta 格式描述变更（而非直接编辑）：
+
+```bash
+python3 mcp/cli.py create-delta <name> --target <spec-path>
+```
+
+使用 `[ADDED]` / `[MODIFIED]` / `[REMOVED]` 标记。审查通过后合并到目标规格，再归档。
+详见: `spec/workflow/delta-specs.md`

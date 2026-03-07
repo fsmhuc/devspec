@@ -18,7 +18,11 @@ Agent 必须按以下顺序阅读文档：
 | 6      | 任务列表   | `spec/features/*/tasks.md`  | 每个功能的实现任务                       |
 | 7      | 测试策略   | `spec/workflow/testing-strategy.md` | TDD 工作流与测试分层要求                 |
 | 7.5    | 波及分析   | `spec/workflow/impact-analysis.md`  | 变更影响分析与定向测试策略               |
-| 8      | 工作流规则 | `spec/workflow/`            | Agent 协作规则（修改任何规格前必须阅读） |
+| 8      | 三维验证   | `spec/workflow/verify.md`   | 完整性/正确性/一致性语义验证             |
+| 9      | 渐进严格度 | `spec/workflow/progressive-rigor.md` | Lite/Full 规格等级                     |
+| 10     | Delta Specs | `spec/workflow/delta-specs.md` | 增量规格变更格式                        |
+| 11     | 归档工作流 | `spec/workflow/archive-workflow.md` | 已完成变更的归档                        |
+| 12     | 工作流规则 | `spec/workflow/`            | Agent 协作规则（修改任何规格前必须阅读） |
 
 ---
 
@@ -63,6 +67,7 @@ Agent 必须按以下顺序阅读文档：
 | 新功能   | Feature Spec | `spec/features/*/spec.md`     | 必须     |
 | 架构变更 | ADR          | `spec/decisions/ADR-*.md`     | 必须     |
 | 大型变更 | Proposal     | `changes/proposals/prop-*.md` | 必须     |
+| 规格修改 | Delta Spec   | `changes/proposals/delta-*.md`| 必须     |
 
 ---
 
@@ -92,12 +97,18 @@ spec/
 │   ├── versioning.md      # 版本控制策略
 │   ├── patch-workflow.md  # 补丁工作流
 │   ├── testing-strategy.md # TDD 与测试策略
-│   └── impact-analysis.md # 波及分析（变更影响与定向测试）
+│   ├── impact-analysis.md # 波及分析（变更影响与定向测试）
+│   ├── verify.md          # 三维验证（ds:verify）
+│   ├── progressive-rigor.md # 渐进式严格度（Lite/Full）
+│   ├── delta-specs.md     # Delta Specs 增量变更工作流
+│   └── archive-workflow.md # 归档工作流
 └── archive/               # 已废弃的规格
 
 changes/
 ├── patches/               # 轻量修复（模板 + 实际补丁）
-└── proposals/             # 大型变更提案
+├── proposals/             # 大型变更提案 + Delta Specs
+│   └── delta-template.md  # Delta 模板
+└── archive/               # 已完成变更的归档
 
 examples/                   # 示例（展示如何使用框架，不属于框架本体）
 ├── user-auth/             # 示例功能: 用户认证

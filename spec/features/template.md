@@ -1,6 +1,7 @@
 # [功能名称]
 
 > 状态: `draft` | `ready` | `in-progress` | `review` | `done`
+> 严格等级: `lite` | `full`
 
 ---
 

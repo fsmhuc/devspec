@@ -45,13 +45,20 @@ python3 mcp/cli.py list spec                # 列出功能和状态
 python3 mcp/cli.py read core/vision.md      # 读取规格文件
 
 # === 创建 ===
-python3 mcp/cli.py create-feature my-feature --goals "目标1, 目标2"
+python3 mcp/cli.py create-feature my-feature --goals "目标1, 目标2"  # 支持 --rigor lite|full
 python3 mcp/cli.py create-adr "决策标题" --context "上下文" --decision "决策"
+python3 mcp/cli.py create-delta <name> --target <feature>  # 创建增量规格变更
 
 # === 补丁工作流 ===
 python3 mcp/cli.py create-patch <name> --problem "问题" --fix "修复"
 python3 mcp/cli.py list-patches
 python3 mcp/cli.py complete-patch <name>
+
+# === 验证与归档 ===
+python3 mcp/cli.py verify <feature>         # 三维验证（完整性/正确性/一致性）
+python3 mcp/cli.py verify --all             # 验证所有功能
+python3 mcp/cli.py archive <name>           # 归档已完成的变更
+python3 mcp/cli.py list-archive             # 查看已归档变更
 
 # === 开发循环 ===
 python3 tools/ai-dev-loop.py spec           # 完整循环
@@ -93,12 +100,13 @@ python3 tools/ai-dev-loop.py spec --skip-tests
 
 ## 变更分类
 
-| 变更类型 | 使用方式     | 路径                          |
-| -------- | ------------ | ----------------------------- |
-| Bug 修复 | Patch        | `changes/patches/fix-*.md`    |
-| 新功能   | Feature Spec | `spec/features/*/spec.md`     |
-| 架构变更 | ADR          | `spec/decisions/ADR-*.md`     |
-| 大型变更 | Proposal     | `changes/proposals/prop-*.md` |
+| 变更类型   | 使用方式     | 路径                                |
+| ---------- | ------------ | ----------------------------------- |
+| Bug 修复   | Patch        | `changes/patches/fix-*.md`          |
+| 新功能     | Feature Spec | `spec/features/*/spec.md`           |
+| 架构变更   | ADR          | `spec/decisions/ADR-*.md`           |
+| 大型变更   | Proposal     | `changes/proposals/prop-*.md`       |
+| 增量变更   | Delta Spec   | `changes/proposals/delta-*.md`      |
 
 ---
 
@@ -123,18 +131,24 @@ spec/
 ├── index.md              # AI Agent 入口
 ├── core/                  # 核心: 愿景、架构、术语
 ├── features/              # 功能规格 + 任务
-│   ├── template.md        # 功能模板
+│   ├── template.md        # 功能模板（支持 lite/full 严格度）
 │   ├── tasks-template.md  # 任务模板
 │   └── <feature>/
 ├── decisions/             # ADR 文档
 │   └── ADR-template.md    # ADR 模板
 ├── workflow/              # 工作流规则
-│   └── context-loading.md # 上下文加载指南
+│   ├── context-loading.md # 上下文加载指南
+│   ├── verify.md          # 三维验证（ds:verify）
+│   ├── progressive-rigor.md # 渐进式严格度
+│   ├── delta-specs.md     # Delta Specs 增量变更
+│   └── archive-workflow.md # 归档工作流
 └── archive/               # 废弃规格
 
 changes/
 ├── patches/               # 轻量修复
-└── proposals/             # 大型变更提案
+├── proposals/             # 大型变更提案 + Delta Specs
+│   └── delta-template.md  # Delta 模板
+└── archive/               # 已完成变更的归档
 ```
 
 ---

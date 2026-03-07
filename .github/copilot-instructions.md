@@ -20,6 +20,9 @@ spec/index.md
 6. **废弃归档** — 不用的规格移至 `spec/archive/`
 7. **任务关联规格** — 每个任务必须追溯到规格
 8. **测试先行（TDD）** — 先写测试，再写实现；测试失败是阻断性事件。详见 `spec/workflow/testing-strategy.md`
+9. **增量变更用 Delta** — 规格修改使用 Delta Spec 格式（ADDED/MODIFIED/REMOVED）。详见 `spec/workflow/delta-specs.md`
+10. **完成即归档** — 已完成的变更归档到 `changes/archive/`。详见 `spec/workflow/archive-workflow.md`
+11. **三维验证** — 功能规格需通过完整性/正确性/一致性验证。详见 `spec/workflow/verify.md`
 
 ## 工作流
 
@@ -47,6 +50,11 @@ python3 mcp/cli.py validate spec     # 验证规格
 python3 mcp/cli.py compile spec generated  # 生成代码
 python3 mcp/cli.py graph spec tree   # 查看结构
 python3 mcp/cli.py list spec         # 列出功能
+python3 mcp/cli.py verify <feature>  # 三维验证（完整性/正确性/一致性）
+python3 mcp/cli.py verify --all      # 验证所有功能
+python3 mcp/cli.py create-delta <name> --target <feature>  # 创建增量变更
+python3 mcp/cli.py archive <name>    # 归档已完成变更
+python3 mcp/cli.py list-archive      # 查看归档列表
 python3 tools/ai-dev-loop.py spec    # 完整开发循环（含测试阻断）
 python3 tools/impact-analyzer.py      # 波及分析（变更影响范围测试）
 ```
