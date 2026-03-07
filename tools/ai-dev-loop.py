@@ -151,7 +151,7 @@ class AIDevLoop:
         return True
 
     def stage_test(self) -> bool:
-        """Run tests on generated code."""
+        """Run tests on generated code. Test failure is blocking."""
         print("\n[3/4] Running tests...")
         print("-" * 30)
 
@@ -170,7 +170,7 @@ class AIDevLoop:
                     cmd,
                     capture_output=True,
                     text=True,
-                    timeout=60
+                    timeout=120
                 )
                 if result.returncode == 0:
                     print(f"Tests passed: {' '.join(cmd)}")
@@ -181,21 +181,43 @@ class AIDevLoop:
                         details=result.stdout.split("\n")
                     ))
                     return True
+                else:
+                    # Test runner found but tests failed — this is blocking
+                    print(f"Tests FAILED: {' '.join(cmd)}")
+                    if result.stdout:
+                        print(result.stdout)
+                    if result.stderr:
+                        print(result.stderr)
+                    self.results.append(LoopResult(
+                        stage="test",
+                        success=False,
+                        message=f"Tests failed with {cmd[0]} (exit={result.returncode})",
+                        details=(result.stdout + "\n" + result.stderr).split("\n")
+                    ))
+                    return False
             except FileNotFoundError:
                 continue
             except subprocess.TimeoutExpired:
                 print(f"Test timeout: {' '.join(cmd)}")
-                continue
+                self.results.append(LoopResult(
+                    stage="test",
+                    success=False,
+                    message=f"Test timed out with {cmd[0]}",
+                    details=[]
+                ))
+                return False
             except Exception as e:
                 print(f"Test error: {e}")
                 continue
 
-        print("No test runner found or tests not configured")
+        # No test runner found — warn (not silent)
+        print("WARNING: No test runner found. Configure a test runner for TDD enforcement.")
+        print("  Supported: npm test, yarn test, pnpm test, pytest, go test")
         self.results.append(LoopResult(
             stage="test",
             success=True,
-            message="Skipped - no test runner found",
-            details=[]
+            message="WARNING: No test runner found — configure one for TDD enforcement",
+            details=["No test runner detected. See spec/workflow/testing-strategy.md"]
         ))
         return True
 

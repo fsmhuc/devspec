@@ -79,10 +79,10 @@ python3 mcp/cli.py graph spec tree
 python3 tools/ai-dev-loop.py spec
 ```
 
-### 6. 初始化混合模式（Claude CLI 推荐）
+### 6. 初始化混合模式（Claude CLI / OpenCode）
 
 ```bash
-# 生成 .claude/commands 与 .claude/skills 模板
+# 生成 .claude/ 与 .opencode/ 的 commands 和 skills 模板
 python3 mcp/cli.py init
 
 # 查看推荐工作流（对话优先 + 命令检查点）
@@ -143,7 +143,8 @@ openspec-framework/
 │   │   ├── spec-workflow.md   # 规格编写流程
 │   │   ├── context-loading.md # 上下文加载指南
 │   │   ├── versioning.md      # 版本控制策略
-│   │   └── patch-workflow.md  # 补丁工作流
+│   │   ├── patch-workflow.md  # 补丁工作流
+│   │   └── testing-strategy.md # TDD 与测试策略
 │   └── archive/               # 已废弃的规格
 ├── tools/                      # 自动化工具
 │   ├── spec-linter.py         # 规格验证
@@ -180,18 +181,19 @@ openspec-framework/
 | **开发循环** | `python3 tools/ai-dev-loop.py spec`        | 验证→生成→测试→分析    |
 | **功能创建** | `python3 mcp/cli.py create-feature <name>` | 创建功能规格骨架       |
 | **ADR 创建** | `python3 mcp/cli.py create-adr <title>`    | 创建架构决策记录       |
-| **混合初始化** | `python3 mcp/cli.py init`                 | 生成 Claude 命令/技能模板 |
+| **混合初始化** | `python3 mcp/cli.py init`                 | 生成 Claude CLI / OpenCode 命令与技能模板 |
 | **工作流提示** | `python3 mcp/cli.py workflow`             | 查看混合模式推荐流程 |
 
 ---
 
 ## 混合模式（推荐）
 
-默认采用“对话驱动为主，命令驱动为辅”：
+默认采用"对话驱动为主，命令驱动为辅"：
 
 - 对话驱动：让 AI 读取 `spec/index.md` 并按任务上下文推进设计与实现
 - 命令检查点：在关键节点执行 `validate / compile / graph / loop`
 - Slash 别名：可直接运行 `python3 mcp/cli.py opsx:validate` 等别名命令
+- 同时支持 **Claude CLI**（`.claude/commands/`）和 **OpenCode**（`.opencode/commands/`）
 
 可用别名：
 
@@ -200,7 +202,6 @@ openspec-framework/
 - `opsx:graph`
 - `opsx:loop`
 - `opsx:workflow`
-
 ---
 
 ## 核心原则
@@ -211,7 +212,7 @@ openspec-framework/
 4. **永不覆盖** — 不直接覆盖规格，通过 git 追踪变更
 5. **废弃归档** — 不用的规格移至 archive
 6. **按需加载** — Agent 根据任务类型加载最少必要的上下文
-
+7. **测试先行** — 先写测试，再写实现（TDD: Red → Green → Refactor）
 ---
 
 ## AI Agent 规则
@@ -224,6 +225,7 @@ AI Agent 必须遵守:
 4. 永不覆盖 — 通过 git 追踪
 5. 架构变更需 ADR — 影响架构的变更先写决策
 6. 不确定就问 — 不猜测
+7. 测试先行 — 先写测试，再写实现（TDD）
 
 详见 `spec/workflow/ai-agent-rules.md`
 

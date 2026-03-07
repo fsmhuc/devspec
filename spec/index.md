@@ -16,7 +16,8 @@ Agent 必须按以下顺序阅读文档：
 | 4      | 架构决策   | `spec/decisions/ADR-*.md`   | 已有的架构决策记录                       |
 | 5      | 功能规格   | `spec/features/*/spec.md`   | 功能级别的设计规格                       |
 | 6      | 任务列表   | `spec/features/*/tasks.md`  | 每个功能的实现任务                       |
-| 7      | 工作流规则 | `spec/workflow/`            | Agent 协作规则（修改任何规格前必须阅读） |
+| 7      | 测试策略   | `spec/workflow/testing-strategy.md` | TDD 工作流与测试分层要求                 |
+| 8      | 工作流规则 | `spec/workflow/`            | Agent 协作规则（修改任何规格前必须阅读） |
 
 ---
 
@@ -89,6 +90,7 @@ spec/
 │   ├── context-loading.md # 上下文加载指南
 │   ├── versioning.md      # 版本控制策略
 │   └── patch-workflow.md  # 补丁工作流
+│   ├── testing-strategy.md # TDD 与测试策略
 └── archive/               # 已废弃的规格
 
 changes/
@@ -112,3 +114,4 @@ examples/                   # 示例（展示如何使用框架，不属于框�
 4. **任务可追溯** — 每个任务必须关联到规格
 5. **渐进式加载** — Agent 按需加载上下文，不浪费 token
 6. **框架与内容分离** — 模板和规则是框架，具体功能是使用者的内容
+7. **测试先行** — 先写测试，再写实现（TDD: Red → Green → Refactor）

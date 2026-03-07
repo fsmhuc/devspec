@@ -19,6 +19,7 @@ spec/index.md
 5. **功能符合架构** — 新功能设计不得与架构冲突
 6. **废弃归档** — 不用的规格移至 `spec/archive/`
 7. **任务关联规格** — 每个任务必须追溯到规格
+8. **测试先行（TDD）** — 先写测试，再写实现；测试失败是阻断性事件。详见 `spec/workflow/testing-strategy.md`
 
 ## 工作流
 
@@ -46,4 +47,5 @@ python3 mcp/cli.py validate spec     # 验证规格
 python3 mcp/cli.py compile spec generated  # 生成代码
 python3 mcp/cli.py graph spec tree   # 查看结构
 python3 mcp/cli.py list spec         # 列出功能
+python3 tools/ai-dev-loop.py spec    # 完整开发循环（含测试阻断）
 ```

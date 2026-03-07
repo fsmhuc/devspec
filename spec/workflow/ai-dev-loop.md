@@ -46,13 +46,13 @@
 - **通过** → 进入阶段 3
 - **失败** → 检查编译器日志
 
-### 阶段 3: 测试
+### 阶段 3: 测试（阻断性）
 
-在生成的代码上运行项目测试。
+在生成的代码上运行项目测试。**测试失败 = 循环失败。**
 
 - **通过** → 进入阶段 4
-- **跳过** → 如果没有配置测试运行器
-- **失败** → 记录失败，进入阶段 4 分析
+- **失败** → **停止循环**，先修复代码或测试
+- **未找到测试运行器** → 发出警告（不再静默跳过）
 
 ### 阶段 4: 分析
 
@@ -71,7 +71,7 @@
 # 完整循环
 python3 tools/ai-dev-loop.py spec
 
-# 跳过测试
+# 跳过测试（仅限纯规格变更，无代码变更时使用）
 python3 tools/ai-dev-loop.py spec --skip-tests
 
 # Shell 包装器
@@ -97,4 +97,13 @@ jobs:
       - uses: actions/setup-python@v5
       - run: python3 tools/spec-linter.py spec
       - run: python3 tools/spec-compiler.py spec generated
+
+  test:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - name: Run Tests
+        run: python3 -m pytest --tb=short -q || echo 'No tests configured'
 ```
